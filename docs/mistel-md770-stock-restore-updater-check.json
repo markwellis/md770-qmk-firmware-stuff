@@ -1,0 +1,17 @@
+{
+  "started_utc": "2026-11-12T23:20:44.755003+00:00",
+  "application_sha256": "8fafdca096756f23626802d5b586b270b0bd512fe5d1c0327db4eafcd4f689b2",
+  "iap_enumeration_verified": true,
+  "normal_usb_return_verified": true,
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "success": true,
+  "physical_usb_path": "usb-0000:06:00.4-1.1.2",
+  "entry_reset_sent": true,
+  "iap_boot_info_hex": "0400000000000000d9041914c0500404ffffffff01000000ffffffff700100000002e70000024b423034313900000000ffffffff",
+  "encoded_sum": "0x0e685d2a",
+  "encoded_crc32": "0x6785727c",
+  "encoded_sum_matches": true,
+  "encoded_crc_matches": true,
+  "return_reset_sent": true
+}

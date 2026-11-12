@@ -566,7 +566,7 @@ See the [recovery record](mistel-md770-recovery.md). Remaining unit-specific
 checks include:
 
 - Whether removed components changed relevant power or connection paths.
-- SWD accessibility and the complete factory-preserving restoration procedure.
+- SWD accessibility and bit-for-bit preservation of undocumented option metadata.
 - The left IAP's contents, protection state and physical recovery entry.
 - Connector contact routing, actual waveforms and the LED driver's
   electrical limits.

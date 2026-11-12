@@ -40,6 +40,14 @@ live = json.loads((repo / "docs/mistel-md770-live-info.json").read_text())
 rom = json.loads((repo / "docs/mistel-md770-rom-info.json").read_text())
 check = json.loads((repo / "docs/mistel-md770-updater-check.json").read_text())
 preflight = json.loads((repo / "docs/mistel-md770-rom-preflight.json").read_text())
+restore = json.loads((repo / "docs/mistel-md770-stock-restore.json").read_text())
+_require(
+    restore["restoration_verified"]
+    and restore["full_main_flash_readback_matched"]
+    and restore["documented_protection_words_readback_matched"]
+    and restore["post_restore_updater_entry_checksums_and_return_verified"],
+    "Stock-restoration verification is incomplete",
+)
 _require(
     preflight["restore_client_info_preflight_passed"]
     and preflight["all_37_samples_matched"],
@@ -88,6 +96,10 @@ main[:0x3000] = iap
 main[0x3000:0x3200] = version_page
 main[0x3200 : 0x3200 + len(app)] = app
 _require(
+    hashlib.sha256(main).hexdigest() == restore["image_sha256"],
+    "Restoration evidence refers to a different image",
+)
+_require(
     hashlib.sha256(main).hexdigest()
     == "8d961215101b93760d20dfbc717f6cd6a2fa879fae26e71a478089df39095ffd",
     "Reconstructed image differs from the independently reviewed hash",
@@ -120,6 +132,12 @@ for name in (
     "mistel-md770-iap-backup.json",
     "mistel-md770-updater-check.json",
     "mistel-md770-rom-preflight.json",
+    "mistel-md770-stock-restore.json",
+    "mistel-md770-stock-restore-updater-check.json",
+    "mistel-md770-stock-restore-preflight.txt",
+    "mistel-md770-stock-restore-program.txt",
+    "mistel-md770-stock-restore-cold-preflight.txt",
+    "mistel-md770-stock-restore-continuation.txt",
 ):
     files[name] = (repo / "docs" / name).read_bytes()
 for name in (
@@ -136,7 +154,8 @@ for name in (
 files["ht32-dfu-tool"] = args.binary.read_bytes()
 _require(
     hashlib.sha256(files["ht32-dfu-tool"]).hexdigest()
-    == preflight["restore_client_sha256"],
+    == preflight["restore_client_sha256"]
+    == restore["utility_sha256"],
     "Use the ROM-preflighted binary or record a fresh preflight first",
 )
 manifest: dict[str, Any] = {
@@ -155,7 +174,8 @@ manifest: dict[str, Any] = {
     "tool_upstream_revision": "848fc071c8f2429bf41f3bd40c60ec9bc5433b72",
     "rom_writer_preflight_verified": True,
     "runtime_platform": "x86_64-linux with Nix; exact shared-library closure included",
-    "restoration_hardware_tested": False,
+    "restoration_hardware_tested": True,
+    "restoration_record": "mistel-md770-stock-restore.json",
     "stock_settings_preservation_required": False,
     "files": {
         name: {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}

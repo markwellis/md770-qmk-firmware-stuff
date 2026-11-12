@@ -13,8 +13,11 @@ It validates option checksums and the erased protection state after reset.
 Programming failures stop instead of automatically retrying a flash word.
 
 The MD770 v1.03 information/protection preflight passed. Six host regression
-tests and strict Clippy passed. Actual erase/program restoration has not
-been performed. The separate CRC-only reader has three host tests and
+tests and strict Clippy passed. Stock restoration passed on the recorded
+right half, including full byte and option-word readback, cold boot,
+typing and updater checks. Its interrupted SEL2 contact required cold
+ROM re-entry and a continuation without `--mass-erase`.
+The separate CRC-only reader has three host tests and
 37 successful live calibration checks; it cannot erase or program flash.
 
 The known full recovery image is 130,560 bytes. It uses 2,511 write

@@ -1,21 +1,24 @@
 # Mistel MD770BT-M recovery investigation
 
-Investigated on 2026-11-12. Initial queries read the running right
+Investigated on 2026-11-12. The subsequent right-half stock restore
+passed on 2026-11-13; its [record and logs](mistel-md770-stock-restore.json)
+document the erase, write, full readback, protection restoration and normal boot.
+Initial queries read the running right
 application. The owner later verified SEL2's BOOT/VSS connections and
 entered the independent ROM loader at power-on. Subsequent USB queries
 read identification, option data and CRCs. Two fresh ROM sessions produced
 byte-identical right-half stock-IAP backups. A later stock-updater check
 used its software entry/return resets and verified application checksums.
-No flash write, erase or protection change was performed.
+Those initial queries performed no flash write, erase or protection change.
 
-**Independent ROM-loader entry now works on this unit. A complete,
-stock-preserving restoration procedure remains unverified.** The ROM
+**Right-half stock restoration is verified on this unit. Left-half recovery
+remains untested.** The ROM
 queries returned coherent option data with read security and option-byte
 protection enabled. The verified right-IAP backup is kept outside this repository as `red_right_MD770R_IAP_0419_stock_20261112.bin`.
 
-**Verify a complete restoration procedure before any firmware write,
-including a diagnostic patch.** ROM entry alone does not prove that a
-protected application can be restored without erasing the stock IAP.
+The [verified procedure](right-recovery-package.md) uses the saved stock
+IAP after mass erase. Keep the measured SEL2 bridge secure through reset;
+the test needed cold ROM re-entry after its first bridge contact failed.
 
 ## Information obtained without changing device state
 
@@ -208,19 +211,17 @@ MD770 pin-map problem.
 2. **Done:** enter ROM and read coherent identification/option data without
    programming. The observed option data enables read security and
    option-byte protection. Live FMC status registers remain unread.
-3. **Partly done:** two fresh CRC-oracle passes produced byte-identical,
-   independently verified stock-IAP backups. A route involving mass erase
-   now has the original IAP available, but the complete write, option-byte
-   restoration and verification procedure remains untested. No mass erase
-   or unlock is allowed at this stage.
+3. **Done:** two fresh CRC-oracle passes produced byte-identical stock-IAP
+   backups. The later stock-restore test completed mass erase, cold ROM
+   re-entry, full image writing/readback and documented option restoration.
 4. **Done:** stock-IAP entry/return and application sum/CRC comparison
    passed. The keyboard returned to normal USB operation and typing.
 5. **Not required for this unit:** the owner uses defaults and accepts
    replacing the stock global-settings sector with QMK settings. A
    settings backup is unnecessary; see the [storage layout](mistel-md770-firmware.md#persistent-settings-in-external-spi-flash).
 
-The requested information-first stage remains open until these
-unit-specific checks are resolved. The implementation specification is in
+The right-half recovery prerequisite is now satisfied. The QMK port still
+needs hardware validation. The implementation specification is in
 [mistel-md770-firmware.md](mistel-md770-firmware.md).
 
 ## Right-half photographs and unpowered measurements
@@ -372,8 +373,9 @@ command was attempted.
 Astra independently checked the replies, checksum, two-pages-per-bit
 interpretation and host diagnostic patch at maximum reasoning effort.
 The meaning of ROM command `04 01` for this vendor's stock-IAP entry
-remains unresolved; it was not sent. ROM access and the later right-IAP
-backup are proven; a complete restoration procedure remains unverified.
+was unresolved in this initial session; it was not sent then. The later
+[stock restore](mistel-md770-stock-restore.json) records its actual reset
+attempt, interrupted SEL2 contact and successful cold-entry continuation.
 
 After unplugging USB and reconnecting with SEL2 unbridged, the device
 returned as **`04d9:0419`**, product `MD770BT-M`, bus 3 device 15. This
@@ -443,8 +445,8 @@ The owner preserved the verified binary at
 Its backup hash and bytes match both reads. The initial copy remains inside
 the supplied `MD770 RGB BT v1.07.02` package as
 `Right(Master)/MD770R_IAP_0419_stock_20261112.bin`. No binary is stored
-in this source repository. The full restoration procedure still requires
-offline construction, review and non-destructive validation before use.
+in this source repository. The full restoration procedure subsequently
+passed the hardware test recorded below.
 
 The later [read-only preflight](mistel-md770-rom-preflight.json) passed
 all 37 checks, including 25 overlapping four-byte windows through the
@@ -456,8 +458,9 @@ The keyboard then returned to normal USB operation and typing.
 The [prepared recovery package](right-recovery-package.md) contains a
 130,560-byte reconstructed stock image. Its independent image hash is
 `8d961215101b93760d20dfbc717f6cd6a2fa879fae26e71a478089df39095ffd`.
-The option page is excluded. Actual erase/program restoration remains
-untested; read-only preflight does not establish that result.
+The option page is excluded. The subsequent [stock-restore test](mistel-md770-stock-restore.json)
+verified the written image, documented protection words, cold boot,
+typing and the restored updater's checksum/return operation.
 
 The `red_right` name identifies the owner's red-switch keyboard and right
 half. A second MD770 has brown switches. Switch type alone does not
@@ -467,8 +470,9 @@ and this unit's left half have not been backed up.
 Astra's final maximum-effort review found no blocking defect in the reader.
 It independently reproduced the reconstruction, checked all backup copies
 and confirmed the IAP's boot policy and application bounds. Correctness
-depends on the separately read anchor and CRC replies. Full restoration
-remains unverified.
+depends on the separately read anchor and CRC replies. Full main-image
+restoration is now verified; undocumented option metadata is not preserved
+bit for bit.
 
 ## Removed Bluetooth carrier
 

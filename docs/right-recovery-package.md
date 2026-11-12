@@ -1,13 +1,19 @@
-# Prepared recovery for the red-switch right half
+# Verified recovery for the red-switch right half
 
 This package targets the recorded US-layout MD770 RGB BT right half,
 model `KB0419`, application `04d9:0419`, stock IAP `04d9:1419`, and
 Holtek ROM `04d9:8010`. The left half uses a different image.
 
-The image and host utility have passed offline checks and static review.
-The corrected utility's read-only ROM preflight passed on this unit.
-The erase/program procedure below has not been executed or verified on
-hardware. It is prepared for recovery, not an instruction to run now.
+Stock restoration passed on this unit on 2026-11-13. All 130,560 main-flash
+bytes and six documented protection/checksum words matched readback.
+Cold boot, right-half typing, stock-updater entry, application checksums
+and normal return passed. The [test record](mistel-md770-stock-restore.json)
+links the original logs.
+
+The owner reported failed SEL2 bridge contact during the first erase/reset.
+Cold ROM entry with the bridge secured returned the device with erased
+protection. The continuation below completed restoration without another
+mass erase. A ROM reset defect was not established.
 
 ## Contents and image layout
 
@@ -88,6 +94,23 @@ does not need a rebuild.
 
 7. If any operation fails, stop. Do not blindly retry programming a word;
    a deliberate erase is needed before another programming attempt.
+
+   The tested interrupted-erase recovery was:
+
+   - Unplug USB, secure SEL2, then reconnect with SEL2 still bridged.
+   - Run `info` again. Require the same model and geometry, and all six
+     documented option words erased: `PP0..3`, `CP` and `CK` must be `ffffffff`.
+     Both protection flags must be false. The recorded reply was entirely `ff`.
+   - Only after confirming that state, deliberately page-erase and restore
+     the full image without repeating the mass-erase/reset step:
+
+     ```fish
+     sudo -A ./ht32-dfu-tool write 0x0 stock-main-flash.bin true true 0xfffff000 0xffffffff 0xffffffff 0xffffffff --verify
+     ```
+
+   This command erases the complete image range before writing it, verifies
+   all bytes, then restores and verifies the documented option words.
+
 8. After success, unplug USB, remove the SEL2 bridge and reconnect normally.
    Verify `04d9:0419`, typing and stock operation.
 

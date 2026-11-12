@@ -1,0 +1,13 @@
+Claimed interface
+Getting device info...
+info_transfer: sent=64 received=64
+info_hex: 0000030100000002ff00ff000000000052230500c1dffcffbe5c9ebefdefcd6fdf6ff5ffdcd4f6f0bc8f9fff373ffdab5f43feecac9eca67a19c953d6eb4ef6d
+Model: HT32F52352
+Version: v103
+Page size: 512 B
+Flash size: 130560 B
+option_transfer: sent=64 received=64
+option_hex: 00f0fffffffffffffffffffffffffffffcfffffffffffffffffffffffffffffff9efffffffffffffffffffffffffffff63d0ffffffffffffa534ffffffffffff
+Flash security: true
+Option byte protection: true
+Page protection: 0xfffff000 0xffffffff 0xffffffff 0xffffffff

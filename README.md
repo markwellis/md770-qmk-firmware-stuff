@@ -17,8 +17,9 @@ not been flashed or tested on the keyboard.
 - Two fresh-session reads produced identical 12 KiB right-IAP backups.
 - All 37 later CRC checks, including internal anchor and six-byte checks, passed.
 - Stock-updater entry, application checksum comparison and normal return passed.
-- A complete stock restoration image and reviewed host utility have been prepared.
-- Actual erase/program restoration and left-half recovery remain untested.
+- Stock restoration passed on the recorded right half, including full byte readback and protection-word verification.
+- Cold boot, right-half typing and the restored stock updater's checksum/return checks passed.
+- QMK operation and left-half recovery remain untested.
 
 The recorded unit has red switches. A second brown-switch keyboard has
 not been checked. Switch colour alone does not establish identical PCB
@@ -32,6 +33,7 @@ revisions or IAP contents.
 - [Prior research and primary sources](docs/mistel-md770-prior-art.md)
 - [Stock lighting experiments](docs/mistel-md770.md)
 - [Prepared right-half recovery procedure](docs/right-recovery-package.md)
+- [Verified right-half stock restore and its logs](docs/mistel-md770-stock-restore.json)
 
 The photographs under `docs/mistel-md770-photos/` are JPEGs with EXIF,
 XMP and IPTC removed. Their compressed image data was preserved.

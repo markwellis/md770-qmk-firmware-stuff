@@ -1,0 +1,10 @@
+Claimed interface
+info_transfer: sent=64 received=64
+info_hex: 0000030100000002ff00ff000000000052230500fffffffffffffffffffffffff9efffffffffffffffffffffffffffff63d0ffffffffffffa534ffffffffffff
+Mass-erasing flash...
+Resetting device...
+Waiting for device to reconnect...
+
+thread 'main' (341190) panicked at src/main.rs:205:26:
+Write failed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

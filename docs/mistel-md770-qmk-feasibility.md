@@ -38,8 +38,10 @@ A first development port now exists in the separate `qmk_firmware`
 repository on branch `mistel-md770-bt`. Both halves and optional right-half
 VIA support compile. Astra's maximum-effort static review and the offline
 checks are recorded in the firmware reconstruction. Later work verified
-right-half ROM entry and saved two matching stock-IAP backups. Hardware
-validation and a complete restoration procedure remain pending.
+right-half ROM entry and saved two matching stock-IAP backups. A subsequent
+[stock-restore test](mistel-md770-stock-restore.json) passed full image and
+protection readback, cold boot, typing and updater checks on the right half.
+QMK hardware validation and left-half recovery remain pending.
 
 ## Evidence and confidence
 
