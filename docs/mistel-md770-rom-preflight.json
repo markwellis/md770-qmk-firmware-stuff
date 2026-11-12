@@ -1,0 +1,254 @@
+{
+  "recorded_utc": "2026-11-12T22:40:20.257115+00:00",
+  "usb": {
+    "vid": "04d9",
+    "pid": "8010",
+    "bus": 3,
+    "device": 22
+  },
+  "restore_client_info_preflight_passed": true,
+  "info_and_option_read_acknowledgements_verified": true,
+  "model": "HT32F52352",
+  "rom_version": "0x0103",
+  "page_size": 512,
+  "usable_flash_bytes": 130560,
+  "restore_client_sha256": "74f84f5eb47bb72d16e07de4493861513680e1090765c18bff4601e7f96d8db8",
+  "crc_source": "tools/ht32-dfu-tool/src/bin/md770-rom-crc.rs",
+  "samples": [
+    {
+      "address": "0x00000408",
+      "length": 4,
+      "bytes_hex": "d9041914",
+      "crc16_xmodem": "0x6cea"
+    },
+    {
+      "address": "0x00003000",
+      "length": 4,
+      "bytes_hex": "1a000000",
+      "crc16_xmodem": "0x730c"
+    },
+    {
+      "address": "0x00003200",
+      "length": 4,
+      "bytes_hex": "e03f0020",
+      "crc16_xmodem": "0x491c"
+    },
+    {
+      "address": "0x00003204",
+      "length": 4,
+      "bytes_hex": "c1320000",
+      "crc16_xmodem": "0x6ed5"
+    },
+    {
+      "address": "0x00003200",
+      "length": 8,
+      "bytes_hex": "e03f0020c1320000",
+      "crc16_xmodem": "0xc53c"
+    },
+    {
+      "address": "0x00003200",
+      "length": 16,
+      "bytes_hex": "e03f0020c1320000c9320000cb320000",
+      "crc16_xmodem": "0x2541"
+    },
+    {
+      "address": "0x00003200",
+      "length": 64,
+      "bytes_hex": "e03f0020c1320000c9320000cb320000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffcd320000ffffffffffffffffcf320000dd8a0000",
+      "crc16_xmodem": "0x2f8d"
+    },
+    {
+      "address": "0x000032c0",
+      "length": 4,
+      "bytes_hex": "04488047",
+      "crc16_xmodem": "0x5d46"
+    },
+    {
+      "address": "0x00003202",
+      "length": 4,
+      "bytes_hex": "0020c132",
+      "crc16_xmodem": "0xb5b2"
+    },
+    {
+      "address": "0x00003200",
+      "length": 6,
+      "bytes_hex": "e03f0020c132",
+      "crc16_xmodem": "0x579d"
+    },
+    {
+      "address": "0x00000400",
+      "length": 4,
+      "bytes_hex": "04000000",
+      "crc16_xmodem": "0xcaf1"
+    },
+    {
+      "address": "0x00000402",
+      "length": 4,
+      "bytes_hex": "00000000",
+      "crc16_xmodem": "0x0000"
+    },
+    {
+      "address": "0x00000404",
+      "length": 4,
+      "bytes_hex": "00000000",
+      "crc16_xmodem": "0x0000"
+    },
+    {
+      "address": "0x00000406",
+      "length": 4,
+      "bytes_hex": "0000d904",
+      "crc16_xmodem": "0xef3b"
+    },
+    {
+      "address": "0x00000408",
+      "length": 4,
+      "bytes_hex": "d9041914",
+      "crc16_xmodem": "0x6cea"
+    },
+    {
+      "address": "0x0000040a",
+      "length": 4,
+      "bytes_hex": "1914c050",
+      "crc16_xmodem": "0x3bd2"
+    },
+    {
+      "address": "0x0000040c",
+      "length": 4,
+      "bytes_hex": "c0500404",
+      "crc16_xmodem": "0x612a"
+    },
+    {
+      "address": "0x0000040e",
+      "length": 4,
+      "bytes_hex": "0404ffff",
+      "crc16_xmodem": "0x0b3e"
+    },
+    {
+      "address": "0x00000410",
+      "length": 4,
+      "bytes_hex": "ffffffff",
+      "crc16_xmodem": "0x99cf"
+    },
+    {
+      "address": "0x00000412",
+      "length": 4,
+      "bytes_hex": "ffff0100",
+      "crc16_xmodem": "0xb7f1"
+    },
+    {
+      "address": "0x00000414",
+      "length": 4,
+      "bytes_hex": "01000000",
+      "crc16_xmodem": "0x76b4"
+    },
+    {
+      "address": "0x00000416",
+      "length": 4,
+      "bytes_hex": "0000ffff",
+      "crc16_xmodem": "0x1d0f"
+    },
+    {
+      "address": "0x00000418",
+      "length": 4,
+      "bytes_hex": "ffffffff",
+      "crc16_xmodem": "0x99cf"
+    },
+    {
+      "address": "0x0000041a",
+      "length": 4,
+      "bytes_hex": "ffff7001",
+      "crc16_xmodem": "0x9cb8"
+    },
+    {
+      "address": "0x0000041c",
+      "length": 4,
+      "bytes_hex": "70010000",
+      "crc16_xmodem": "0x7545"
+    },
+    {
+      "address": "0x0000041e",
+      "length": 4,
+      "bytes_hex": "00000002",
+      "crc16_xmodem": "0x2042"
+    },
+    {
+      "address": "0x00000420",
+      "length": 4,
+      "bytes_hex": "0002e700",
+      "crc16_xmodem": "0xe745"
+    },
+    {
+      "address": "0x00000422",
+      "length": 4,
+      "bytes_hex": "e7000002",
+      "crc16_xmodem": "0xf585"
+    },
+    {
+      "address": "0x00000424",
+      "length": 4,
+      "bytes_hex": "00024b42",
+      "crc16_xmodem": "0xd7d0"
+    },
+    {
+      "address": "0x00000426",
+      "length": 4,
+      "bytes_hex": "4b423034",
+      "crc16_xmodem": "0x700c"
+    },
+    {
+      "address": "0x00000428",
+      "length": 4,
+      "bytes_hex": "30343139",
+      "crc16_xmodem": "0xa452"
+    },
+    {
+      "address": "0x0000042a",
+      "length": 4,
+      "bytes_hex": "31390000",
+      "crc16_xmodem": "0x0169"
+    },
+    {
+      "address": "0x0000042c",
+      "length": 4,
+      "bytes_hex": "00000000",
+      "crc16_xmodem": "0x0000"
+    },
+    {
+      "address": "0x0000042e",
+      "length": 4,
+      "bytes_hex": "0000ffff",
+      "crc16_xmodem": "0x1d0f"
+    },
+    {
+      "address": "0x00000430",
+      "length": 4,
+      "bytes_hex": "ffffffff",
+      "crc16_xmodem": "0x99cf"
+    },
+    {
+      "address": "0x00000400",
+      "length": 6,
+      "bytes_hex": "040000000000",
+      "crc16_xmodem": "0x06a1"
+    },
+    {
+      "address": "0x00000408",
+      "length": 6,
+      "bytes_hex": "d9041914c050",
+      "crc16_xmodem": "0x5e82"
+    }
+  ],
+  "all_37_samples_matched": true,
+  "anchor_windows_verified": 25,
+  "six_byte_crc_checks_verified": 3,
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "rom_reset_command_sent": false,
+  "return_to_normal_usb": {
+    "vid": "04d9",
+    "pid": "0419",
+    "bus": 3,
+    "device": 23,
+    "typing_confirmed_by_owner": true
+  }
+}

@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+**/target/
+*.bin
+*.exe
+*.nar
+*.nar.zst
+/recovery/
+/md770-analysis/

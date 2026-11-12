@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-12",
+  "target": "Red-switch MD770BT-M right half, USB 04d9:8010 ROM v1.03",
+  "other_unit": "Owner also has a brown-switch MD770; its hardware and IAP have not been checked",
+  "region": {
+    "start": "0x00000000",
+    "end_exclusive": "0x00003000",
+    "bytes": 12288
+  },
+  "method": {
+    "command": "02 00 CRC16 oracle",
+    "window_bytes": 4,
+    "recovered_bytes_per_query": 2,
+    "anchor": "52-byte live information block at 0x400..0x433",
+    "anchor_source_record": "docs/mistel-md770-live-info.json: boot_info_hex",
+    "anchor_validation": "The direct-read anchor is additionally checked by 25 overlapping CRC windows and calibrated six-byte checks",
+    "whole_crc_validation": "Consistent with all page CRCs; not mathematically independent of them",
+    "seed_error_limitation": "A propagated CRC-linear seed error can cancel across the four-byte windows, 512-byte pages and whole region; correctness depends on the separately read anchor",
+    "six_byte_crc_check_performed": true,
+    "reconstruction_queries": 6118,
+    "anchor_windows_independently_checked": 25,
+    "strengthening_record": "docs/mistel-md770-rom-preflight.json"
+  },
+  "pass_1": {
+    "sha256": "61e377ee21584a7bce42a2a9532a40b6682ba9d1a095cfe08708555ab7e5bd4e",
+    "bytes": 12288,
+    "vectors": {
+      "initial_stack_pointer": "0x20001fe0",
+      "reset": "0x000000b9",
+      "nmi": "0x000000c1",
+      "hard_fault": "0x000000c1"
+    },
+    "live_information_block_matched": true,
+    "all_24_page_crcs_matched": true,
+    "whole_region_crc_matched": true,
+    "thumb_disassembly_plausible": true
+  },
+  "pass_2": {
+    "sha256": "61e377ee21584a7bce42a2a9532a40b6682ba9d1a095cfe08708555ab7e5bd4e",
+    "bytes": 12288,
+    "live_information_block_matched": true,
+    "all_24_page_crcs_matched": true,
+    "whole_region_crc_matched": true
+  },
+  "passes_identical": true,
+  "durable_backup_saved": true,
+  "durable_backup": {
+    "file": "red_right_MD770R_IAP_0419_stock_20261112.bin",
+    "backup_copy_matches": true,
+    "package": "MD770 RGB BT v1.07.02",
+    "relative_path": "Right(Master)/MD770R_IAP_0419_stock_20261112.bin",
+    "sha256": "61e377ee21584a7bce42a2a9532a40b6682ba9d1a095cfe08708555ab7e5bd4e",
+    "mode": "0644"
+  },
+  "review": {
+    "reviewer": "Astra",
+    "reasoning_effort": "maximum",
+    "date": "2026-11-12",
+    "code_blockers_found": false,
+    "assurance": "Correct direct-read anchor and CRC replies uniquely determine the reconstructed bytes; backup copies and bootloader code are coherent",
+    "restoration_verified": false
+  },
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "reset_command_sent": false
+}

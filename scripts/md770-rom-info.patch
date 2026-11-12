@@ -1,0 +1,40 @@
+diff --git a/src/device.rs b/src/device.rs
+index c9358f7..a08dfc7 100644
+--- a/src/device.rs
++++ b/src/device.rs
+@@ -15,6 +15,7 @@ pub enum Error {
+     Usb(rusb::Error),
+     DeviceNotFound,
+     EndpointNotFound,
++    InvalidResponse,
+     ReconnectFailed,
+     File(std::io::Error),
+     InvalidFilePath,
+@@ -274,7 +275,12 @@ impl HT32ISPDevice {
+         if self.info.is_none() {
+             let cmd: [u8; 64] = HT32ISPCommand::info_cmd().into();
+             let mut info = [0u8; 64];
+-            self.send_recv_cmd(&cmd[..], &mut info[..])?;
++            let (sent, received) = self.send_recv_cmd(&cmd[..], &mut info[..])?;
++            println!("info_transfer: sent={sent} received={received}");
++            println!("info_hex: {}", info.iter().map(|b| format!("{b:02x}")).collect::<String>());
++            if sent != 64 || received != 64 {
++                return Err(Error::InvalidResponse);
++            }
+             let version: u16 = (info[2] as u16) | ((info[3] as u16) << 8);
+             let model: u32 = match version {
+                 0x100 => (info[0] as u32) | ((info[1] as u32) << 8),
+@@ -304,7 +310,12 @@ impl HT32ISPDevice {
+         if self.security_info.is_none() {
+             let cmd: [u8; 64] = HT32ISPCommand::read_flash_cmd(OB_ADDR, 64).into();
+             let mut buf = [0u8; 64];
+-            self.send_recv_cmd(&cmd[..], &mut buf[..])?;
++            let (sent, received) = self.send_recv_cmd(&cmd[..], &mut buf[..])?;
++            println!("option_transfer: sent={sent} received={received}");
++            println!("option_hex: {}", buf.iter().map(|b| format!("{b:02x}")).collect::<String>());
++            if sent != 64 || received != 64 {
++                return Err(Error::InvalidResponse);
++            }
+             // security/protection is enabled when bit is 0
+             let flash_security = (buf[16] & 1) == 0;
+             let option_byte_protection = (buf[16] & 2) == 0;

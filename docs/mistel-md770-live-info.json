@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-12",
+  "usb_vid": "04d9",
+  "usb_pid": "0419",
+  "usb_bcd_device": "0710",
+  "application_mode": 1,
+  "version": "V1.07.02",
+  "version_words": [
+    "00800004",
+    "00070002",
+    "00000170",
+    "efffffff",
+    "00000001",
+    "00000000",
+    "041904d9"
+  ],
+  "boot_info_hex": "0400000000000000d9041914c0500404ffffffff01000000ffffffff700100000002e70000024b423034313900000000ffffffff",
+  "application_header_word_hex": "04000200",
+  "version_page_hex": "1a000000560031002e00300037002e003000320000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff040080000200070070010000ffffffef0100000000000000d9041904ffffffffffffffffffffffffffffffffffffffffffffffffffffffffa55a1c00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "version_page_sha256": "28ba8c0c556f1700d2980124df75111a7b9d9e4a0d9db64a72739894146baa61",
+  "updater_version_template_matches_live_page": true,
+  "updater_version_template_conversion": "none; exact 180-byte match"
+}

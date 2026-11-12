@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-12",
+  "usb": {
+    "vid": "04d9",
+    "pid": "8010",
+    "bus": 3,
+    "device": 14
+  },
+  "entry": "SEL2 square pad (MCU35 PA9/BOOT) held to round pad (MCU19 VSS) at USB power-on; bridge removed before query",
+  "tool": {
+    "repository": "https://github.com/hansemro/ht32-dfu-tool",
+    "version": "0.2.2",
+    "revision": "848fc071c8f2429bf41f3bd40c60ec9bc5433b72",
+    "host_diagnostic_patch": "scripts/md770-rom-info.patch",
+    "command": "info",
+    "sent_commands": [
+      "03 00",
+      "01 02 (0x1ff00000..0x1ff0003f)"
+    ]
+  },
+  "info_reply_hex": "0000030100000002ff00ff000000000052230500fffffffffffffffffffffffff9efffffffffffffffffffffffffffff63d0ffffffffffffa534ffffffffffff",
+  "option_reply_hex": "00f0fffffffffffffffffffffffffffffcfffffffffffffffffffffffffffffff9efffffffffffffffffffffffffffff63d0ffffffffffffa534ffffffffffff",
+  "info_transfer": {
+    "sent": 64,
+    "received": 64
+  },
+  "option_transfer": {
+    "sent": 64,
+    "received": 64
+  },
+  "rom_version": "0x0103",
+  "original_tool_model_output": "unknown (parser handles only 0x0100 and 0x0101)",
+  "model_word_at_offset_0x10": "0x00052352",
+  "model_interpretation": "Consistent with HT32F52352 and the photographed OEM marking HT50F52352; version 0x0103 field layout is not independently documented",
+  "page_size_bytes": 512,
+  "usable_flash_pages": 255,
+  "usable_flash_bytes": 130560,
+  "physical_option_page": "0x0001fe00..0x0001ffff",
+  "option_words": {
+    "pp0": "0xfffff000",
+    "pp1": "0xffffffff",
+    "pp2": "0xffffffff",
+    "pp3": "0xffffffff",
+    "cp": "0xfffffffc",
+    "checksum_stored": "0xffffeff9",
+    "checksum_computed": "0xffffeff9",
+    "checksum_valid": true
+  },
+  "option_flash_security_enabled": true,
+  "option_byte_protection_enabled": true,
+  "page_write_protected_range": "0x00000000..0x00002fff (one protection bit covers two 512-byte pages)",
+  "live_cpsr_read": false,
+  "ordinary_main_flash_read_command_attempted": false,
+  "full_main_flash_backup_obtained": false,
+  "stock_iap_backup_obtained": true,
+  "stock_iap_backup_record": "docs/mistel-md770-iap-backup.json",
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "reset_command_sent": false,
+  "normal_usb_return_verified": true,
+  "normal_usb_return": {
+    "vid": "04d9",
+    "pid": "0419",
+    "bus": 3,
+    "device": 15,
+    "product": "MD770BT-M",
+    "typing_verified": true
+  },
+  "factory_preserving_restore_verified": false
+}

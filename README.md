@@ -1,0 +1,89 @@
+# Mistel MD770 RGB BT research and tools
+
+Research for the US-layout Mistel MD770 RGB BT (`MD770BT-M`) and the
+inspected right board `MD770BR-RIGHT V06 1223BJ`. This repository contains
+the evidence, photographs, reverse-engineering notes and host utilities.
+
+The QMK port remains in the separate
+[qmk_firmware fork](https://github.com/markwellis/qmk_firmware), on the
+local development branch `mistel-md770-bt`. QMK source and patches are not
+duplicated here. The port has compiled and passed static review; it has
+not been flashed or tested on the keyboard.
+
+## Current evidence
+
+- The right controller is marked `HT50F52352`; its ROM reports model value `52352`.
+- Measured SEL2 BOOT/GND connections enter the independent Holtek ROM loader.
+- Two fresh-session reads produced identical 12 KiB right-IAP backups.
+- All 37 later CRC checks, including internal anchor and six-byte checks, passed.
+- Stock-updater entry, application checksum comparison and normal return passed.
+- A complete stock restoration image and reviewed host utility have been prepared.
+- Actual erase/program restoration and left-half recovery remain untested.
+
+The recorded unit has red switches. A second brown-switch keyboard has
+not been checked. Switch colour alone does not establish identical PCB
+revisions or IAP contents.
+
+## Documentation
+
+- [Recovery and bootloader investigation](docs/mistel-md770-recovery.md)
+- [Firmware reconstruction, wiring and protocols](docs/mistel-md770-firmware.md)
+- [Initial QMK feasibility assessment](docs/mistel-md770-qmk-feasibility.md)
+- [Prior research and primary sources](docs/mistel-md770-prior-art.md)
+- [Stock lighting experiments](docs/mistel-md770.md)
+- [Prepared right-half recovery procedure](docs/right-recovery-package.md)
+
+The photographs under `docs/mistel-md770-photos/` are JPEGs with EXIF,
+XMP and IPTC removed. Their compressed image data was preserved.
+
+## Host tools
+
+- `scripts/md770-extract.py` extracts the supplied `maaV105` updater offline.
+- `scripts/md770_updater_check.py` visits the stock IAP, queries checksums and attempts normal return.
+- `scripts/md770_prepare_recovery.py` assembles the known right-half restoration package offline.
+- `scripts/md770-backlight.py` contains the stock-lighting experiment.
+- `scripts/md770-ghidra/` reproduces the decompilation setup and exports.
+- `tools/ht32-dfu-tool/` contains the pinned and corrected Holtek host utility.
+- `tools/ht32-dfu-tool/src/bin/md770-rom-crc.rs` contains the CRC-only backup reader.
+
+The diagnostic and backup reader cannot program firmware. The
+`ht32-dfu-tool write` command can erase/program it; its presence does not
+mean a restoration has been tested.
+
+Build the Rust tools on NixOS:
+
+```fish
+cd tools/ht32-dfu-tool
+nix-shell -p cargo rustc pkg-config libusb1 gcc --run 'cargo test --locked --bins && cargo build --release --locked --bins'
+```
+
+Run the Python host tests from this repository's root:
+
+```fish
+python3 -B -m unittest discover -s tests -p 'test_md770*.py' -v
+```
+
+See [the host utility provenance](tools/ht32-dfu-tool/UPSTREAM.md) for the
+pinned upstream revision, local corrections and upstream licence.
+
+## Firmware and recovery artefacts
+
+Firmware executables, decoded images, device backups, compiled tools and
+Nix runtime archives stay outside Git. Evidence records contain their
+hashes. Recreate the known package with the original updater, the verified
+IAP backup, the saved preflighted host utility and its runtime archive:
+
+```fish
+python3 scripts/md770_prepare_recovery.py /path/to/new-package \
+    --updater /path/to/MD770R_FW_0419_7.02_20230421.exe \
+    --iap /path/to/red_right_MD770R_IAP_0419_stock_20261112.bin \
+    --binary /path/to/preflighted/ht32-dfu-tool \
+    --runtime /path/to/nix-runtime.nar.zst
+```
+
+This builder targets the recorded right US 7.02 image and checks the
+known input and final-image hashes. It does not execute the Windows
+updater or send USB commands.
+
+The utility must match the executable hash in the recorded ROM preflight.
+A different rebuild needs a fresh recorded read-only preflight first.

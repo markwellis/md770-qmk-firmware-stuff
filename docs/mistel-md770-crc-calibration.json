@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-12",
+  "usb": {
+    "vid": "04d9",
+    "pid": "8010",
+    "bus": 3,
+    "device": 17
+  },
+  "tool": {
+    "source": "tools/ht32-dfu-tool/src/bin/md770-rom-crc.rs",
+    "binary_sha256": "07343a80074fa8f5fba211099000aab9cc6063ff6a0dc4f01a55c27912c5f112",
+    "command": "02 00 (CRC16 of address and byte length)",
+    "status": "GET_REPORT 0xa1/0x01/0x0100; CRC16 little-endian followed by 0x4f",
+    "empty_status_behaviour": "GET_REPORT stalls with USB PIPE before each request",
+    "received_status_bytes": 64
+  },
+  "samples": [
+    {
+      "address": "0x00000408",
+      "length": 4,
+      "bytes_hex": "d9041914",
+      "crc16_xmodem": "0x6cea"
+    },
+    {
+      "address": "0x00003000",
+      "length": 4,
+      "bytes_hex": "1a000000",
+      "crc16_xmodem": "0x730c"
+    },
+    {
+      "address": "0x00003200",
+      "length": 4,
+      "bytes_hex": "e03f0020",
+      "crc16_xmodem": "0x491c"
+    },
+    {
+      "address": "0x00003204",
+      "length": 4,
+      "bytes_hex": "c1320000",
+      "crc16_xmodem": "0x6ed5"
+    },
+    {
+      "address": "0x00003200",
+      "length": 8,
+      "crc16_xmodem": "0xc53c"
+    },
+    {
+      "address": "0x00003200",
+      "length": 16,
+      "crc16_xmodem": "0x2541"
+    },
+    {
+      "address": "0x00003200",
+      "length": 64,
+      "crc16_xmodem": "0x2f8d"
+    },
+    {
+      "address": "0x000032c0",
+      "length": 4,
+      "bytes_hex": "04488047",
+      "crc16_xmodem": "0x5d46"
+    },
+    {
+      "address": "0x00003202",
+      "length": 4,
+      "bytes_hex": "0020c132",
+      "crc16_xmodem": "0xb5b2"
+    }
+  ],
+  "all_samples_matched_known_bytes": true,
+  "two_byte_aligned_start_supported": true,
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "reset_command_sent": false,
+  "iap_backup_obtained": false
+}
