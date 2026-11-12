@@ -70,7 +70,13 @@ pinned upstream revision, local corrections and upstream licence.
 
 Firmware executables, decoded images, device backups, compiled tools and
 Nix runtime archives stay outside Git. Evidence records contain their
-hashes. Recreate the known package with the original updater, the verified
+hashes. The recorded unit's recovery bundle is kept outside this repository as
+`red_right_recovery_20261112/`.
+All 25 `SHA256SUMS` entries and the runtime archive passed verification after
+copying. Its `manifest.json` SHA-256 is
+`dc166f3da075d475406940e5e22de0833396e6cf8d2491063c4aea614e314050`.
+
+Recreate the known package with the original updater, the verified
 IAP backup, the saved preflighted host utility and its runtime archive:
 
 ```fish
