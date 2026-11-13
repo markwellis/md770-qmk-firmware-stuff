@@ -15,3 +15,21 @@ nix-shell -p gcc --run 'gcc -std=gnu11 -Wall -Wextra -Werror -Wno-old-style-decl
 
 The command uses the backing and logical sizes from the right keyboard's
 JSON. The warning exception covers an existing QMK timer-header declaration.
+
+The temporary hardware backup tools used for the native-allocation test are
+archived as `backup_probe.c` and `capture_backup.py`. They are not part of
+the normal firmware. The probe handles read-only VIA channel `0x7f` requests
+for the first 64 KiB plus a 64-byte guard; the capture requires two identical
+complete reads and writes a new private file with file/directory sync.
+
+For a temporary diagnostic build, copy `backup_probe.c` into the keyboard
+folder as `flash_backup.c`, add `SRC += flash_backup.c` to the right-half
+`rules.mk`, and build with `VIA_ENABLE=yes`. Run the capture with:
+
+```fish
+sudo -A python3 tests/md770_storage/capture_backup.py /path/to/private-backup.bin
+```
+
+Confirm the flash geometry first. Keep the raw backup private; remove the
+probe from the final build. The capture creates the backup as root with
+mode `0600`.
