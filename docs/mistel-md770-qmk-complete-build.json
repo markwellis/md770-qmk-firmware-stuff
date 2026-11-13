@@ -102,7 +102,7 @@
       }
     }
   },
-  "new_feature_hardware_validation": "Corrected right image passes full reset and cold-reconnect profile/colour/lighting-state persistence. Paired typing, indicators and RGB controls passed. Updater blink cue, remaining DIP functions, complete key coverage and suspend remain to check.",
+  "new_feature_hardware_validation": "Corrected right image passes full reset and cold-reconnect profile/colour/lighting-state persistence. Paired typing, indicators and RGB controls passed. Owner confirmed visible updater-entry flashes; IAP identity, version and application checksums passed, and QMK returned normally. Remaining DIP functions, complete key coverage and suspend remain to check.",
   "optional_via_build": {
     "application_bytes": 38140,
     "application_sha256": "6d3fdd26b169f9d3a3bffa9be0fe55c07fef256ae2ab83b5a99f6ece85692f67",
@@ -207,5 +207,24 @@
   "current_left_application_sha256": "e6fdc298714385b473f506f4eafdd2464c96e947d7775d7549d40a6722a5f93d",
   "current_right_source_commit": "aa420b6e363de3082d6cb4d329847cd9ee30dc3b",
   "current_left_source_commit": "c80470f32ea92871d22f4891beacc5f9c2e6178a",
-  "persistence_fix_hardware_passed": true
+  "persistence_fix_hardware_passed": true,
+  "owner_confirmed_updater_entry_blink_cue": true,
+  "right_feature_updater_roundtrip_result": {
+    "half": "right",
+    "application_sha256": "4213c52a0f699009a0b15c014b50630efd703a4696b45f1b5613456279888261",
+    "flash_modified": false,
+    "success": true,
+    "iap_identity_and_version_verified": true,
+    "encoded_sum": "77569158",
+    "encoded_crc32": "768cc42f",
+    "application_checksums_verified": true,
+    "application_return_requested": true,
+    "normal_usb_identity": {
+      "idVendor": "04d9",
+      "idProduct": "0419",
+      "product": "MD770 RGB BT (wired QMK)",
+      "bcdDevice": "0010"
+    },
+    "normal_usb_return_verified": true
+  }
 }

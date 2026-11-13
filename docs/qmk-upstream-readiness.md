@@ -82,9 +82,11 @@ colours and the active custom-lighting mode also survive reconnect without
 Pn+F10. This validates the storage correction on the recorded hardware.
 
 Pn+Insert now requests three 100 ms on/off flashes on both indicators before
-updater entry. The stock IAP owns the LEDs after reset. The blink cue and
-updater round trip are being checked. Remaining DIP functions, complete key
-coverage and suspend still need bench checks.
+updater entry. The stock IAP owns the LEDs after reset. The owner confirmed
+visible entry flashes. The updater's identity, version page and both installed
+application checksums matched, and its normal-return command restored QMK.
+No flash write or erase occurred during that check. Remaining DIP functions,
+complete key coverage and suspend still need bench checks.
 Full key coverage, remaining DIP combinations, settings persistence, USB
 suspend/wake and held-key split-cable-loss recovery still need bench checks.
 
