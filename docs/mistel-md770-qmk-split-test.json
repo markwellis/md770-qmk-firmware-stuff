@@ -136,5 +136,11 @@
   "clean_owner_confirmed_both_halves_typing": true,
   "clean_owner_confirmed_both_space_bars": true,
   "clean_owner_confirmed_cross_half_shift": true,
-  "clean_owner_confirmed_paired_usb_cold_reconnect": true
+  "clean_owner_confirmed_paired_usb_cold_reconnect": true,
+  "clean_owner_confirmed_fn_shortcuts": [
+    "Calculator",
+    "Screenshot",
+    "Volume up",
+    "Volume down"
+  ]
 }

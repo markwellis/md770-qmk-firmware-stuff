@@ -22,7 +22,8 @@ The right USB update passed application and version-page checks and returned
 to QMK. Its HID descriptors contain no diagnostic console interface.
 After reassembly, the owner confirmed both halves, both space bars and
 cross-half Shift work, including after a cold USB reconnect. No PCB bridge
-was needed. Diagnostic code is absent from the QMK tree.
+was needed. The owner also confirmed Fn calculator, screenshot and volume
+up/down shortcuts. Diagnostic code is absent from the QMK tree.
 
 Next, verify complete key and Fn/Pn coverage, the remaining DIP functions,
 settings persistence and held-key split-cable-loss recovery. RGB validation
