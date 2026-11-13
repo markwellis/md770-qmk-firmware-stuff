@@ -1,17 +1,21 @@
 # MD770 QMK development
 
 The port lives in the separate `qmk_firmware` repository on branch
-`mistel-md770-bt`. QMK has not been tested on the keyboard. The recorded
+`mistel-md770-bt`. The right half has passed USB-only QMK installation,
+basic typing and cold reconnect. The recorded
 right half has passed [stock recovery](mistel-md770-stock-restore.json).
 Both halves now have verified ROM entry, two matching IAP backups and
-successful stock restoration. QMK hardware operation remains untested.
+successful stock restoration. Left-half QMK, split operation and RGB remain
+untested. The [first right-half test record](mistel-md770-right-qmk-first-test.json)
+records the exact build and verified behaviour.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
 strict lint and formatting checks. Eighteen host tests pass, covering UART
 framing, SPI erase geometry and DIP behaviour. Five firmware configurations
 build: both defaults, right VIA and both halves without RGB Matrix.
-No QMK image has been flashed. The port contains no custom notification
-protocol; this work is limited to the wired QMK port.
+The first right-half hardware build disables RGB animations. The port
+contains no custom notification protocol; this work is limited to the wired
+QMK port.
 
 ## Build prerequisites
 
@@ -80,3 +84,50 @@ Then validate both halves on hardware: every key, the split link, all DIP
 combinations, Mac/Fn behaviour, lighting, settings and USB reconnect/suspend.
 Keep research images, dumps, decompiler output and host recovery tools in
 this repository rather than the QMK keyboard directory.
+
+## First hardware test
+
+The first prepared test uses only the recorded red-switch right half, with
+the inter-half cable and battery power disconnected. The DIP positions are
+unconfirmed; check them when interpreting key mappings. The left half remains
+on stock firmware.
+
+Build the default keymap after applying the reset-register correction above:
+
+```fish
+make -j4 mistel/md770rgb_bt/right:default RGB_MATRIX_ENABLE=no TARGET=mistel_md770rgb_bt_right_first_test
+```
+
+This disables QMK RGB animations. The shared matrix/LED scan driver still
+runs and sends zero PWM data; it is not an electrically isolated LED test.
+The build retains the normal external-flash settings backend.
+
+The prepared application is 26,824 bytes, SHA-256
+`ef455622c99999992ceb39ed965434fcd5ea6a0c566e15f12adfbbbbef67e3b5`.
+It was built from QMK commit `aba11aa9f9` with the dependency correction.
+Its initial stack is `0x20000400`, reset vector `0x00003ce1`, and right-hand
+compatibility record at `0x3bf8` is `040450c0 34000001 00020004`.
+
+A fallback ROM image preserves bytes `0x0000`–`0x31ff` from the verified
+right stock recovery image, places QMK at `0x3200`, and fills the remainder
+through `0x1fdff` with `ff`. It excludes the option page. The resulting
+130,560-byte image has SHA-256
+`d82f62cbe46f23f71ef652d0852008bf12c59a434ed7f01e98e9d6d6ac9f76a3`.
+The private test package includes that image, the original stock recovery
+image, the reviewed writer, matching source, runtime and checksums.
+
+Normal installation uses the [stock USB updater](usb-flashing.md), preserving
+its bootloader and option page. The full reconstructed image and ROM writer
+above are fallback recovery artefacts, not the normal flashing route.
+SEL2 on the right and SEL4 on the left are only needed if software entry
+and the resident updater are unavailable.
+
+After programming succeeds, check that QMK enumerates and then cold-reconnect
+USB with all pads open. Check USB identification, every right-half key, held
+keys, modifiers and cold reconnect before adding the split link or RGB.
+USB programming, basic typing, Backspace/Enter/arrows and cold reconnect
+have passed. Every individual key, DIP combination, RGB and settings
+persistence still need verification. Pn+Insert entered the retained updater,
+and its software reset returned to QMK. A visible updater-entry indication
+is deferred until baseline testing is complete. The left half remains on
+stock firmware.

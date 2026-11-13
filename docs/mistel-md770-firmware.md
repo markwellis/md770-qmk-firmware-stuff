@@ -640,7 +640,9 @@ Binary checks confirm the correct half-specific compatibility records,
 Thumb reset vectors, vector base and reserved RAM boundary. The QMK
 initial stack pointer is `0x20000400`, using ChibiOS's allocated interrupt
 stack; the stock application's initial pointer is `0x20003fe0`. Bootloader
-acceptance of the prepared images has not been tested.
+acceptance has now been tested for the right-half no-RGB image through the
+stock USB updater. Basic right-half typing and cold reconnect passed; left
+QMK, split operation and RGB remain untested.
 
 Follow-up manual review corrected the upper application-flash boundary to
 `0x1fe00`. The final 512-byte main-flash page holds option bytes and is

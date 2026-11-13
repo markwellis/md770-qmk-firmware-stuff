@@ -7,8 +7,9 @@ the evidence, photographs, reverse-engineering notes and host utilities.
 The QMK port remains in the separate
 [qmk_firmware fork](https://github.com/markwellis/qmk_firmware), on the
 local development branch `mistel-md770-bt`. QMK source and patches are not
-duplicated here. The port has compiled and passed static review; it has
-not been flashed or tested on the keyboard.
+duplicated here. The right half has booted QMK after a USB-only update and
+passed basic typing and cold reconnect checks. Left-half QMK, the split link
+and RGB remain untested.
 
 ## Current evidence
 
@@ -20,7 +21,8 @@ not been flashed or tested on the keyboard.
 - Stock restoration passed on the recorded right half, including full byte readback and protection-word verification.
 - Cold boot, right-half typing and the restored stock updater's checksum/return checks passed.
 - Both halves have verified ROM entry, two matching stock-IAP backups and successful stock restoration.
-- QMK operation remains untested.
+- Right-half QMK USB installation, basic typing and cold reconnect passed with SEL2 open.
+- Left-half QMK, split operation, complete key coverage, DIP combinations, RGB and settings persistence remain untested.
 
 The recorded unit has red switches. A second brown-switch keyboard has
 not been checked. Switch colour alone does not establish identical PCB
@@ -30,6 +32,8 @@ revisions or IAP contents.
 
 - [Mistel MD770 user manual](docs/mistel-md770-user-manual.pdf)
 - [Current QMK implementation and upstream prerequisites](docs/qmk-upstream-readiness.md)
+- [Normal USB installation procedure](docs/usb-flashing.md)
+- [First right-half QMK hardware result](docs/mistel-md770-right-qmk-first-test.json)
 - [Recovery and bootloader investigation](docs/mistel-md770-recovery.md)
 - [Left-half recovery investigation](docs/left-recovery-investigation.md)
 - [Firmware reconstruction, wiring and protocols](docs/mistel-md770-firmware.md)
@@ -47,6 +51,7 @@ XMP and IPTC removed. Their compressed image data was preserved.
 
 - `scripts/md770-extract.py` extracts the supplied `maaV105` updater offline.
 - `scripts/md770_updater_check.py` visits the stock IAP, queries checksums and attempts normal return.
+- `scripts/md770_flash.py` installs a compatible application through the retained stock USB updater; offline validation is the default.
 - `scripts/md770_prepare_recovery.py` assembles the known right-half restoration package offline.
 - `scripts/md770-backlight.py` contains the stock-lighting experiment.
 - `scripts/md770-ghidra/` reproduces the decompilation setup and exports.
