@@ -142,5 +142,9 @@
     "Screenshot",
     "Volume up",
     "Volume down"
-  ]
+  ],
+  "clean_owner_confirmed_caps_lock_function": true,
+  "caps_lock_indicator_observed": false,
+  "caps_lock_indicator_support_implemented": false,
+  "caps_lock_test_host_setup": "Temporarily removed the host Caps Lock disable option; persistent host configuration unchanged"
 }

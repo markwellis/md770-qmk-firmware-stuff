@@ -23,10 +23,15 @@ to QMK. Its HID descriptors contain no diagnostic console interface.
 After reassembly, the owner confirmed both halves, both space bars and
 cross-half Shift work, including after a cold USB reconnect. No PCB bridge
 was needed. The owner also confirmed Fn calculator, screenshot and volume
-up/down shortcuts. Diagnostic code is absent from the QMK tree.
+up/down shortcuts. Caps Lock changes letter case after the host's disable
+option is temporarily removed, but the keyboard shows no Caps Lock indicator.
+The port has no lock-indicator GPIO configuration or LED update hook yet;
+this is a separate implementation gap, not a verified RGB-disable limitation.
+Diagnostic code is absent from the QMK tree.
 
-Next, verify complete key and Fn/Pn coverage, the remaining DIP functions,
-settings persistence and held-key split-cable-loss recovery. RGB validation
+Next, implement and validate the Caps Lock indicator, then verify complete
+key and Fn/Pn coverage, the remaining DIP functions, settings persistence
+and held-key split-cable-loss recovery. RGB validation
 needs a separate update; the installed images keep RGB animations disabled.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
