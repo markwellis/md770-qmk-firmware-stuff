@@ -19,8 +19,8 @@ not been flashed or tested on the keyboard.
 - Stock-updater entry, application checksum comparison and normal return passed.
 - Stock restoration passed on the recorded right half, including full byte readback and protection-word verification.
 - Cold boot, right-half typing and the restored stock updater's checksum/return checks passed.
-- Left-half ROM entry and two matching stock-IAP backups are verified.
-- QMK operation and left-half stock restoration remain untested.
+- Both halves have verified ROM entry, two matching stock-IAP backups and successful stock restoration.
+- QMK operation remains untested.
 
 The recorded unit has red switches. A second brown-switch keyboard has
 not been checked. Switch colour alone does not establish identical PCB
@@ -37,7 +37,7 @@ revisions or IAP contents.
 - [Prior research and primary sources](docs/mistel-md770-prior-art.md)
 - [Stock lighting experiments](docs/mistel-md770.md)
 - [Prepared right-half recovery procedure](docs/right-recovery-package.md)
-- [Prepared left-half stock-restore test, awaiting approval](docs/left-recovery-package.md)
+- [Verified left-half recovery procedure](docs/left-recovery-package.md)
 - [Verified right-half stock restore and its logs](docs/mistel-md770-stock-restore.json)
 
 The photographs under `docs/mistel-md770-photos/` are JPEGs with EXIF,
@@ -91,12 +91,19 @@ python3 scripts/md770_prepare_recovery.py /path/to/new-package \
     --updater /path/to/MD770R_FW_0419_7.02_20230421.exe \
     --iap /path/to/red_right_MD770R_IAP_0419_stock_20261112.bin \
     --binary /path/to/preflighted/ht32-dfu-tool \
+    --tool-source /path/to/preflighted/tool-source \
     --runtime /path/to/nix-runtime.nar.zst
 ```
 
 This builder targets the recorded right US 7.02 image and checks the
 known input and final-image hashes. It does not execute the Windows
 updater or send USB commands.
+
+The binary and its corresponding source snapshot must match the recorded
+fingerprints. The frozen right-hand writer needs its original `tool-source`
+directory; the maintained source now includes additional diagnostics.
+The corresponding original writer source is available at
+[commit 2fae8dc](https://github.com/markwellis/md770-qmk-firmware-stuff/tree/2fae8dc/tools/ht32-dfu-tool).
 
 The utility must match the executable hash in the recorded ROM preflight.
 A different rebuild needs a fresh recorded read-only preflight first.

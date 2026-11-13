@@ -3,8 +3,8 @@
 The port lives in the separate `qmk_firmware` repository on branch
 `mistel-md770-bt`. QMK has not been tested on the keyboard. The recorded
 right half has passed [stock recovery](mistel-md770-stock-restore.json).
-Left-half ROM entry and two matching IAP backups are verified; left-half
-stock restoration remains untested.
+Both halves now have verified ROM entry, two matching IAP backups and
+successful stock restoration. QMK hardware operation remains untested.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
 strict lint and formatting checks. Eighteen host tests pass, covering UART

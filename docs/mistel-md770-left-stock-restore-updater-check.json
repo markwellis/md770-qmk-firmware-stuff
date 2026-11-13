@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-13",
+  "half": "left",
+  "application_sha256": "febc84d9dc1fd23152218232839279ecb59f255615a6d6c5b4d951a848c85064",
+  "iap_enumeration_verified": true,
+  "normal_usb_return_verified": true,
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "success": true,
+  "version_page_hex": "1a000000560031002e00300034002e003000310000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff040080000100040070010000ffffffef0100000000000000d9041a04ffffffffffffffffffffffffffffffffffffffffffffffffffffffffa55a1c00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "entry_reset_sent": true,
+  "iap_boot_info_hex": "0400000000000000d9041a1480600404ffffffff01000000ffffffff6c0100000002e70000024b423034314100000000ffffffff",
+  "encoded_sum": "0x2a82d590",
+  "encoded_crc32": "0x90309827",
+  "encoded_sum_matches": true,
+  "encoded_crc_matches": true,
+  "return_reset_sent": true
+}

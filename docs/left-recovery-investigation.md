@@ -112,14 +112,15 @@ the directly read information block, and matched all 24 page CRCs and
 the whole-region CRC. The 12,288-byte results are byte-identical, SHA-256
 `29a4cb40d5b0a4c0280a39bbaa0c58d7f6b93969e8499b4597923b9482565614`.
 The canonical private backup is `MD770L_IAP_041A_stock_20261113.bin`.
-No flash or protection changes were made. Left stock restoration remains
-untested; matching read-only backups do not establish successful restoration.
+No flash or protection changes were made during the backup reads. Those
+backups were subsequently used for the verified stock restoration below.
 
-The [prepared stock-restore test](left-recovery-package.md) now has a
-verified package and an independently verified backup copy. The
-[planned test record](mistel-md770-left-stock-restore.json) distinguishes
-preparation from authorisation and execution. No erase or programming
-has been authorised or attempted.
+The [stock-restore test](left-recovery-package.md) passed, including full
+main-flash and documented-option readback, cold boot and typing, updater
+checksums/return and cold protection verification. The
+[execution record](mistel-md770-left-stock-restore.json) preserves the first
+write failure and successful cold-ROM page-erase continuation separately.
+The first failure's exact cause remains undetermined.
 
 After unplugging USB and reconnecting with SEL4 open, the left half
 returned to `04d9:041a` application mode with unchanged boot information.

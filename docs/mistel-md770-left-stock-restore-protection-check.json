@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-13",
+  "half": "left",
+  "usb_vid": "04d9",
+  "usb_pid": "8010",
+  "model_word": "0x00052352",
+  "rom_version": "0x0103",
+  "page_size_bytes": 512,
+  "usable_flash_pages": 255,
+  "info_transfer_bytes": 64,
+  "option_transfer_bytes": 64,
+  "option_words": {
+    "pp0": "0xfffff000",
+    "pp1": "0xffffffff",
+    "pp2": "0xffffffff",
+    "pp3": "0xffffffff",
+    "cp": "0xfffffffc"
+  },
+  "option_checksum": "0xffffeff9",
+  "option_checksum_valid": true,
+  "flash_security_enabled": true,
+  "option_byte_protection_enabled": true,
+  "original_documented_words_match": true,
+  "cold_boot_before_query": true,
+  "tool_sha256": "3df4b1fdd66618e0cbda9e60f6ec724d61c83b1bac8d54bda9a4fe8f7692f392",
+  "normal_usb_return_verified": true,
+  "live_cpsr_read": false,
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "reset_command_sent": false,
+  "normal_usb_identity": {
+    "idVendor": "04d9",
+    "idProduct": "041a",
+    "product": "MD770BT-S",
+    "bcdDevice": "0410"
+  }
+}

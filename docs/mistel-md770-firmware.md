@@ -568,7 +568,7 @@ checks include:
 
 - Whether removed components changed relevant power or connection paths.
 - SWD accessibility and bit-for-bit preservation of undocumented option metadata.
-- Left-half stock restoration and first QMK hardware tests.
+- First QMK hardware tests on both halves.
 - Connector contact routing, actual waveforms and the LED driver's
   electrical limits.
 
@@ -582,7 +582,7 @@ of the actual unit:
 | Key positions | Matrix-to-key tables, Fn/Pn and layout remaps | Match the US key layout and test each key; alternative-layout entries do not prove physical switches exist |
 | Split behaviour | UART pins, framing, checksums, payloads, scheduling and PB8 mode selection | Implement the recovered behaviour and test connection loss/reconnection; physical contact routing and waveforms remain unmeasured |
 | Persistent settings | SPI1 pin/mode assignments, external flash commands, global record and four profile sectors | Validate the prepared QMK backend on hardware after preserving the stock flash; broader stock macro allocation remains to be mapped |
-| Recovery | Right SEL2 and left SEL4 ROM entry; two matching IAP backups per half; both boot policies decoded; right stock restoration verified | Validate left stock restoration before calling its complete restore path tested |
+| Recovery | Right SEL2 and left SEL4 ROM entry; two matching IAP backups per half; both boot policies decoded; stock restoration verified on both halves | Validate the separate QMK application flashing workflow |
 
 ### First port preparation and review
 

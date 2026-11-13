@@ -1,7 +1,20 @@
-# Prepared stock restoration for the left half
+# Verified stock restoration for the left half
 
 This procedure targets the recorded MD770BT-S left half, KB041A, US 4.01.
-It has not yet been tested or authorised for execution. QMK is not involved.
+Stock restoration passed on this unit on 2026-11-13. QMK was not involved.
+
+The initial mass-erase/write attempt stopped with a generic write error
+after successful ROM return. Its readback matched stock through `0x31ff`,
+with the application region erased; this does not establish whether the
+prefix was retained or rewritten. The exact initial failure remains unknown.
+Cold ROM entry followed by the deliberate page-erase continuation below
+completed restoration. Do not blindly repeat programming after an error.
+
+All 130,560 bytes and six documented protection/checksum words matched
+readback. Cold boot, typing, stock-updater entry/checksums/return, a cold
+ROM protection query and final normal return passed. The successful writer
+has SHA-256 `3df4b1fdd66618e0cbda9e60f6ec724d61c83b1bac8d54bda9a4fe8f7692f392`;
+it adds error diagnostics without changing transfers or acknowledgement rules.
 
 The reconstructed 130,560-byte stock-main-flash.bin has SHA-256
 `eb6eb73f6d929958bb7c0d72d5f3d919c20cf96985284a3c55ea8717d5c85b28`.
@@ -42,7 +55,7 @@ If the recorded Nix runtime paths are missing, restore the archive first:
 zstd -dc nix-runtime.nar.zst | sudo -A nix-store --import
 ```
 
-After explicit approval for this test:
+For a future destructive restoration, after explicit approval:
 
 1. Disconnect USB, the inter-half cable and all other power.
 2. Securely bridge only the measured SEL4 BOOT/GND pair. Connect normal host USB.
@@ -67,8 +80,8 @@ After explicit approval for this test:
    writes the immutable input, compares
    every byte, then restores and verifies the documented option words.
 
-6. On any error, stop. Do not blindly retry a word or rerun mass erase. If
-   ROM return was interrupted, unplug, secure SEL4, reconnect and query `info`.
+6. On any error, stop. Do not blindly retry a word or rerun mass erase.
+   Unplug, wait two seconds, secure SEL4, reconnect and query `info`.
    An unprotected device with all six documented option words `ffffffff`
    can use a separately reviewed continuation that deliberately page-erases
    the full input range before writing, without another mass-erase/reset:
@@ -83,5 +96,6 @@ After explicit approval for this test:
    read-only if needed to confirm the final documented protection state, then
    unplug and reconnect with SEL4 open to finish in normal typing mode.
 
-The corresponding source record is `docs/mistel-md770-left-stock-restore.json`.
-Full left restoration remains unverified until these checks pass.
+The source record is [mistel-md770-left-stock-restore.json](mistel-md770-left-stock-restore.json).
+The recorded success used the cold-ROM page-erase continuation; the direct
+write immediately following mass erase has not been shown to succeed here.

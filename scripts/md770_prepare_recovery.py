@@ -11,6 +11,19 @@ import struct
 import tempfile
 from typing import Any
 
+WRITER_SOURCE_FILES = (
+    "Cargo.toml",
+    "Cargo.lock",
+    "src/main.rs",
+    "src/device.rs",
+    "src/command.rs",
+)
+WRITER_SOURCE_HASHES = {
+    "74f84f5eb47bb72d16e07de4493861513680e1090765c18bff4601e7f96d8db8": "4fd28ede1a0884fbe12421e18f0809493a96a1c959f1450de6217b13d911ac1f",
+    "1fdd57f6018070a1d9ff24213e197ebae1e543c017a568f1fad0b5f07b481bbf": "4fd28ede1a0884fbe12421e18f0809493a96a1c959f1450de6217b13d911ac1f",
+    "3df4b1fdd66618e0cbda9e60f6ec724d61c83b1bac8d54bda9a4fe8f7692f392": "5d5e9a55c98f26f89bf7400f297ab19d09b93a16630ec9d447ef7bb6aa3a2030",
+}
+
 
 def _require(condition: bool, message: str) -> None:
     if not condition:
@@ -25,11 +38,16 @@ parser.add_argument("--binary", type=Path, required=True)
 parser.add_argument("--runtime", type=Path, required=True)
 parser.add_argument("--half", choices=("right", "left"), default="right")
 parser.add_argument("--option-reply", type=Path)
+parser.add_argument(
+    "--tool-source",
+    type=Path,
+    help="Corresponding writer source snapshot; defaults to the maintained source",
+)
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[1]
 updater = args.updater
 iap_path = args.iap
-tool = repo / "tools/ht32-dfu-tool"
+tool = args.tool_source or repo / "tools/ht32-dfu-tool"
 left = args.half == "left"
 prefix = "mistel-md770-left" if left else "mistel-md770"
 group = "g3e8" if left else "g4e8"
@@ -45,6 +63,26 @@ check = json.loads((repo / f"docs/{prefix}-updater-check.json").read_text())
 restore = json.loads((repo / f"docs/{prefix}-stock-restore.json").read_text())
 if left:
     backup = json.loads((repo / f"docs/{prefix}-iap-backup.json").read_text())
+    client_preflight = rom
+    if restore["restoration_verified"]:
+        _require(
+            restore["full_main_flash_readback_matched"]
+            and restore["documented_protection_words_readback_matched"]
+            and restore["cold_documented_protection_words_matched"]
+            and restore["typing_confirmed_by_owner"]
+            and restore["post_restore_updater_entry_checksums_and_return_verified"],
+            "Left stock-restoration verification is incomplete",
+        )
+        client_preflight = json.loads(
+            (repo / f"docs/{prefix}-stock-restore-protection-check.json").read_text()
+        )
+        _require(
+            client_preflight["cold_boot_before_query"]
+            and client_preflight["original_documented_words_match"]
+            and client_preflight["option_words"] == rom["option_words"]
+            and client_preflight["option_checksum"] == rom["option_checksum"],
+            "Post-restoration protection differs from the original",
+        )
     _require(
         backup["passes_identical"]
         and backup["second_fresh_session_pass_obtained"]
@@ -57,16 +95,18 @@ if left:
         "Two verified left-IAP reads are required",
     )
     _require(
-        rom["info_transfer_bytes"] == rom["option_transfer_bytes"] == 64
-        and rom["option_checksum_valid"]
-        and rom["normal_usb_return_verified"]
-        and rom["model_word"] == "0x00052352"
-        and rom["rom_version"] == "0x0103"
-        and rom["page_size_bytes"] == 512
-        and rom["usable_flash_pages"] == 255,
+        client_preflight["info_transfer_bytes"]
+        == client_preflight["option_transfer_bytes"]
+        == 64
+        and client_preflight["option_checksum_valid"]
+        and client_preflight["normal_usb_return_verified"]
+        and client_preflight["model_word"] == "0x00052352"
+        and client_preflight["rom_version"] == "0x0103"
+        and client_preflight["page_size_bytes"] == 512
+        and client_preflight["usable_flash_pages"] == 255,
         "Left ROM preflight is incomplete",
     )
-    expected_tool_sha256 = rom["tool_sha256"]
+    expected_tool_sha256 = client_preflight["tool_sha256"]
 else:
     preflight = json.loads((repo / "docs/mistel-md770-rom-preflight.json").read_text())
     _require(
@@ -209,6 +249,16 @@ if left:
             "stock-restore",
         )
     )
+    if restore["restoration_verified"]:
+        record_names += tuple(
+            f"{prefix}-stock-restore-{suffix}"
+            for suffix in (
+                "updater-check.json",
+                "protection-check.json",
+                "program.txt",
+                "continuation.txt",
+            )
+        )
 for name in record_names:
     files[name] = (repo / "docs" / name).read_bytes()
 for name in (
@@ -223,11 +273,18 @@ for name in (
 ):
     files["tool-source/" + name] = (tool / name).read_bytes()
 files["ht32-dfu-tool"] = args.binary.read_bytes()
+binary_sha256 = hashlib.sha256(files["ht32-dfu-tool"]).hexdigest()
 _require(
-    hashlib.sha256(files["ht32-dfu-tool"]).hexdigest()
-    == expected_tool_sha256
-    == restore["utility_sha256"],
+    binary_sha256 == expected_tool_sha256 == restore["utility_sha256"],
     "Use the ROM-preflighted binary or record a fresh preflight first",
+)
+source_fingerprint = hashlib.sha256()
+for name in WRITER_SOURCE_FILES:
+    source_fingerprint.update(name.encode() + b"\0")
+    source_fingerprint.update(files["tool-source/" + name])
+_require(
+    source_fingerprint.hexdigest() == WRITER_SOURCE_HASHES.get(binary_sha256),
+    "Writer source differs from its recorded snapshot; supply the matching --tool-source directory",
 )
 manifest: dict[str, Any] = {
     "date": datetime.now(timezone.utc).date().isoformat(),
@@ -246,6 +303,8 @@ manifest: dict[str, Any] = {
     "tool_upstream": "https://github.com/hansemro/ht32-dfu-tool",
     "tool_upstream_revision": "848fc071c8f2429bf41f3bd40c60ec9bc5433b72",
     "rom_writer_preflight_verified": True,
+    "writer_source_fingerprint_sha256": source_fingerprint.hexdigest(),
+    "writer_source_files": WRITER_SOURCE_FILES,
     "runtime_platform": "x86_64-linux with Nix; exact shared-library closure included",
     "restoration_hardware_tested": restore["restoration_verified"],
     "restoration_record": f"{prefix}-stock-restore.json",

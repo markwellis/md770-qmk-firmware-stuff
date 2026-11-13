@@ -13,10 +13,13 @@ It validates option checksums and the erased protection state after reset.
 Programming failures stop instead of automatically retrying a flash word.
 
 The MD770 v1.03 information/protection preflight passed. Six host regression
-tests and strict Clippy passed. Stock restoration passed on the recorded
-right half, including full byte and option-word readback, cold boot,
-typing and updater checks. Its interrupted SEL2 contact required cold
-ROM re-entry and a continuation without `--mass-erase`.
+tests and strict Clippy passed. Stock restoration passed on both recorded
+halves, including full byte and option-word readback, cold boot, typing
+and updater checks. Both completed through cold ROM entry and a deliberate
+page-erase continuation without `--mass-erase`. The right's initial SEL2
+contact failed; the left's first write failure remains unexplained.
+Write errors now include status-clear, transfer-address and ACK-batch
+context without changing transfers, acknowledgement rules or retries.
 The separate CRC-only reader has four host tests covering both recorded
 information anchors. Its default targets right US 7.02; `--left` selects
 left US 4.01. Both halves have passed 37 live calibration checks. The

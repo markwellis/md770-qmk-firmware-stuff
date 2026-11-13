@@ -11,9 +11,9 @@ byte-identical right-half stock-IAP backups. A later stock-updater check
 used its software entry/return resets and verified application checksums.
 Those initial queries performed no flash write, erase or protection change.
 
-**Right-half stock restoration is verified on this unit. Left-half ROM entry
-and two matching IAP backups are also verified; left stock restoration
-remains untested.** See the [left investigation](left-recovery-investigation.md).
+**Stock restoration is verified on both halves of this unit. Both have
+measured ROM entry and two matching IAP backups.** See the
+[left investigation](left-recovery-investigation.md).
 The ROM
 queries returned coherent option data with read security and option-byte
 protection enabled. The verified right-IAP backup is kept outside this repository as `red_right_MD770R_IAP_0419_stock_20261112.bin`.
