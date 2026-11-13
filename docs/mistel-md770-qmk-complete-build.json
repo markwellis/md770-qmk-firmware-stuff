@@ -102,7 +102,7 @@
       }
     }
   },
-  "new_feature_hardware_validation": "Corrected right image passes full reset and cold-reconnect profile/colour/lighting-state persistence. Paired typing, indicators and RGB controls passed. Owner confirmed visible updater-entry flashes; IAP identity, version and application checksums passed, and QMK returned normally. Remaining DIP functions, complete key coverage and suspend remain to check.",
+  "new_feature_hardware_validation": "Corrected right image passes reset and cold-reconnect settings persistence. All standard keys, Fn navigation/media, individual DIP functions and precedence cases, held-key/modifier split loss/reconnect, and USB selective suspend/wake passed. Full host sleep/wake and nine other DIP combinations remain untested physically.",
   "optional_via_build": {
     "application_bytes": 38140,
     "application_sha256": "6d3fdd26b169f9d3a3bffa9be0fe55c07fef256ae2ab83b5a99f6ece85692f67",
@@ -226,5 +226,6 @@
       "bcdDevice": "0010"
     },
     "normal_usb_return_verified": true
-  }
+  },
+  "final_hardware_validation": "docs/mistel-md770-final-hardware-tests.json"
 }

@@ -84,9 +84,19 @@ Pn+Insert now requests three 100 ms on/off flashes on both indicators before
 updater entry. The stock IAP owns the LEDs after reset. The owner confirmed
 visible entry flashes. The updater's identity, version page and both installed
 application checksums matched, and its normal-return command restored QMK.
-No flash write or erase occurred during that check. Complete key/modifier
-and Fn coverage, DIP2–4 and all DIP combinations, USB suspend/wake and
-held-key split-cable-loss recovery still need bench checks.
+No flash write or erase occurred during that check. The subsequent
+[final hardware checks](mistel-md770-final-hardware-tests.json) passed every
+standard key and modifier, Fn navigation and media controls, DIP2–4,
+DIP1+DIP3 and DIP2+DIP4 precedence, and held-key/modifier split-link loss
+and reconnect. The owner also reported about one hour of ordinary typing
+without problems.
+
+The kernel confirmed USB selective suspend while the laptop stayed running.
+The owner confirmed all lighting went out, key presses woke the keyboard
+and lighting returned. The original USB power settings were restored.
+KVM power-loss/reconnect also restored lighting and typing. Full laptop
+system suspend/wake remains untested. Seven of sixteen DIP switch sets
+were exercised physically; the other nine remain untested on hardware.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
 strict lint and formatting checks. Twenty-one QMK unit tests pass, covering UART
@@ -158,11 +168,13 @@ Vial-specific code belongs downstream; it is not accepted in upstream QMK.
 
 ## Before submission
 
-Complete the dependency updates and the remaining hardware checks before
-submission: every key/modifier and Fn shortcut, DIP2–4 and all switch
-combinations, USB suspend/wake and held-key split-cable-loss recovery.
-The supported flashing workflow is documented in [USB installation](usb-flashing.md).
-The tested wired features and persistence results are recorded above.
+Complete the dependency updates before submission. The
+[final hardware record](mistel-md770-final-hardware-tests.json) distinguishes
+verified keyboard behaviour from the untested full-host sleep/wake path and
+remaining DIP switch combinations. No upstream pull requests are authorised
+yet. The supported flashing workflow is documented in
+[USB installation](usb-flashing.md). The tested wired features and
+persistence results are recorded above.
 Keep research images, dumps, decompiler output and host recovery tools in
 this repository rather than the QMK keyboard directory.
 
@@ -239,7 +251,8 @@ nix-shell -p gcc --run 'gcc -std=c11 -Wall -Wextra -Werror -ffunction-sections -
 The corrected application passed USB programming and QMK enumeration.
 DIP1 OFF → ON → OFF and cold reconnect passed: F12 switches between
 normal F12 and Volume Up as expected, and Fn+F12 remains F12. All switches
-were left off. The other DIP functions still need the complete keyboard.
+were left off. Later paired-keyboard tests passed the other individual DIP
+functions and the precedence cases recorded in the final hardware checks.
 
 ## Split GPIO correction
 

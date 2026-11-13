@@ -6,12 +6,13 @@ the evidence, photographs, reverse-engineering notes and host utilities.
 
 The QMK port remains in the separate
 [qmk_firmware fork](https://github.com/markwellis/qmk_firmware), on the
-local development branch `mistel-md770-bt`. QMK source and patches are not
+branch `mistel-md770-bt`. QMK source and patches are not
 duplicated here. Both halves have booted QMK after USB-only updates and
 passed basic typing, cold reconnect and updater entry/return checks. Split
 typing and cold reconnect now pass with clean firmware on both halves,
 including both space bars and cross-half Shift. The diagnostic console has
-been removed. RGB still needs hardware validation.
+been removed. RGB effects, indicators and settings persistence passed
+hardware validation.
 
 ## Current evidence
 
@@ -27,14 +28,15 @@ been removed. RGB still needs hardware validation.
 - A one-line DIP polarity correction passed DIP1 OFF/ON/OFF and cold reconnect testing.
 - Left-half USB installation, basic typing, Shift/Caps Lock, cold reconnect and Escape-on-connect updater entry/return passed with SEL4 open.
 - Split typing and cold reconnect passed after restoring the stock right PB11 active state.
-- Complete key/modifier and Fn coverage, remaining DIP functions/combinations, USB suspend/wake and held-key cable-loss recovery remain untested.
+- Every standard key and modifier, Fn navigation/media, each DIP function and the DIP1+DIP3 and DIP2+DIP4 interactions passed.
+- Held-key/modifier split-link loss, reconnect, KVM power cycling and USB selective suspend/wake passed.
+- Full host sleep/wake and nine other DIP switch combinations remain untested physically.
 
 The feature build includes dedicated Caps Lock/profile indicators, the
 three programmable profiles and reset controls, saved per-key lighting,
 USB lighting sleep and stale-link lighting recovery. See the
 [implementation checkpoint](docs/qmk-upstream-readiness.md#complete-wired-feature-build)
-and optional [VIA definition](via/README.md). These additions still need
-further hardware validation. Both feature images passed USB programming,
+and optional [VIA definition](via/README.md). Both feature images passed USB programming,
 paired typing, Caps/profile indicators and RGB on/off across both halves.
 The corrected right image also passed factory reset and saved profile/colour
 persistence across cold reconnect.
@@ -47,6 +49,7 @@ revisions or IAP contents.
 
 - [Mistel MD770 user manual](docs/mistel-md770-user-manual.pdf)
 - [Current QMK implementation and upstream prerequisites](docs/qmk-upstream-readiness.md)
+- [Final key, DIP, split-recovery and USB suspend checks](docs/mistel-md770-final-hardware-tests.json)
 - [Normal USB installation procedure](docs/usb-flashing.md)
 - [First right-half QMK hardware result](docs/mistel-md770-right-qmk-first-test.json)
 - [First left-half QMK hardware result](docs/mistel-md770-left-qmk-first-test.json)

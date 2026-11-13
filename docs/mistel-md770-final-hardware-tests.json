@@ -1,0 +1,242 @@
+{
+  "date": "2026-11-13",
+  "scope": "Recorded red-switch US 85-key MD770 RGB BT, wired operation",
+  "right_application_sha256": "4213c52a0f699009a0b15c014b50630efd703a4696b45f1b5613456279888261",
+  "left_application_sha256": "e6fdc298714385b473f506f4eafdd2464c96e947d7775d7549d40a6722a5f93d",
+  "owner_reported_regular_typing": {
+    "duration_approximately_minutes": 60,
+    "reported_problems": false,
+    "scope": "Ordinary use; not an exhaustive individual-key test"
+  },
+  "event_capture": "Foreground Wayland wev key and modifier events; raw input transcript excluded",
+  "function_and_navigation_keys": {
+    "expected_symbols": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F7",
+      "F8",
+      "F9",
+      "F10",
+      "F11",
+      "F12",
+      "Insert",
+      "Delete",
+      "Home",
+      "End",
+      "Prior",
+      "Next",
+      "Left",
+      "Up",
+      "Down",
+      "Right"
+    ],
+    "correct_press_and_release_events": true
+  },
+  "fn_navigation": {
+    "physical_keys": [
+      "I",
+      "J",
+      "K",
+      "L",
+      "H",
+      "N",
+      "[",
+      "]",
+      ";",
+      "Z"
+    ],
+    "expected_symbols": [
+      "Up",
+      "Left",
+      "Down",
+      "Right",
+      "Home",
+      "End",
+      "Scroll_Lock",
+      "Pause",
+      "Insert",
+      "Menu"
+    ],
+    "correct_press_and_release_events": true,
+    "ordinary_i_after_fn_release_verified": true,
+    "additional_scroll_lock_presses": "Owner repeated the shortcut after the initial sequence; each observed event had a matching release"
+  },
+  "validation_status": "Standard keys, Fn navigation/media, individual DIP functions and key interactions, split recovery and USB selective suspend passed",
+  "remaining_checks": [
+    "Full laptop system-suspend/wake path was not exercised",
+    "The remaining nine DIP switch combinations were not exercised physically"
+  ],
+  "upstream_prs": "Not authorised yet; owner requested no upstream PRs",
+  "dip2": {
+    "physical_switches_on": [
+      2
+    ],
+    "physical_caps_lock": "Control_L",
+    "physical_left_control": "Caps_Lock",
+    "correct_press_and_release_events": true,
+    "caps_lock_off_after_test": true
+  },
+  "dip2_and_dip4": {
+    "physical_switches_on": [
+      2,
+      4
+    ],
+    "physical_caps_plus_i": "Control_L+i",
+    "physical_fn_plus_i": "Up",
+    "correct_press_and_release_events": true,
+    "no_modifiers_held_after_test": true,
+    "dip2_precedence_verified": true
+  },
+  "dip4": {
+    "physical_switches_on": [
+      4
+    ],
+    "physical_caps_plus_i": "Up",
+    "physical_fn": "Caps_Lock",
+    "correct_press_and_release_events": true,
+    "caps_lock_off_after_test": true,
+    "no_modifiers_held_after_test": true
+  },
+  "dip3": {
+    "physical_switches_on": [
+      3
+    ],
+    "physical_left_alt": "Super_L",
+    "physical_left_gui": "Alt_L",
+    "after_switch_off": [
+      "Alt_L",
+      "Super_L"
+    ],
+    "correct_press_and_release_events": true,
+    "no_modifiers_held_after_test": true
+  },
+  "dip1_and_dip3": {
+    "tested_switch_sets": [
+      [
+        1
+      ],
+      [
+        1,
+        3
+      ]
+    ],
+    "physical_left_alt": "Super_L",
+    "physical_left_gui": "Alt_L",
+    "physical_fn_plus_f12": "F12",
+    "correct_press_and_release_events": true,
+    "no_double_swap": true,
+    "no_modifiers_held_after_test": true,
+    "owner_returned_all_switches_off": true
+  },
+  "held_a_split_link_loss": {
+    "owner_sequence": "Held left A; disconnected and reconnected the inter-half cable while A remained held; waited about three seconds; released A; tapped A then J",
+    "automatic_release_during_disconnect_verified": true,
+    "held_key_reasserted_after_reconnect": true,
+    "physical_release_after_reconnect_verified": true,
+    "fresh_a_and_j_press_release_pairs_verified": true,
+    "observed_gap_between_automatic_release_and_reassertion_ms": 7679,
+    "timeout_latency_measured": false
+  },
+  "held_shift_split_link_loss": {
+    "physical_sequence": "Held left Shift; tapped right J; disconnected the inter-half cable; kept Shift held; waited two seconds; tapped right J; released Shift before reconnecting",
+    "before_disconnect": "J",
+    "after_disconnect": "j",
+    "automatic_shift_release_verified": true,
+    "correct_press_and_release_events": true,
+    "no_modifiers_held_after_test": true,
+    "timeout_latency_measured": false,
+    "first_attempt": "Inconclusive physical sequence; Shift was active again before the second J. Owner reported an incorrect first attempt and repeated the test."
+  },
+  "individual_key_coverage": {
+    "all_83_host_reporting_physical_keys_verified": true,
+    "both_space_bars_checked_individually": true,
+    "internal_fn_and_pn_verified_through_shortcuts": true,
+    "all_standard_press_and_release_pairs_correct": true,
+    "right_alt_host_mapping": "The test host maps physical right Alt to Compose; captured XKB keycode 108 with Multi_key",
+    "no_modifiers_held_after_test": true
+  },
+  "fn_media": {
+    "physical_fn_keys": [
+      "Q",
+      "W",
+      "E",
+      "S",
+      "D",
+      "F",
+      "Y"
+    ],
+    "linux_event_codes": [
+      165,
+      164,
+      163,
+      115,
+      114,
+      113,
+      140
+    ],
+    "actions": [
+      "Previous track",
+      "Play/pause",
+      "Next track",
+      "Volume up",
+      "Volume down",
+      "Mute",
+      "Calculator"
+    ],
+    "correct_press_and_release_events": true,
+    "owner_confirmed_calculator_launched": true,
+    "capture_scope": "MD770 consumer-control interface only; observed before compositor shortcut handling"
+  },
+  "kvm_power_cycle": {
+    "owner_confirmed_full_power_loss": true,
+    "lighting_returned_after_power_restored": true,
+    "subsequent_typing_worked": true,
+    "equivalent_to_usb_suspend": false
+  },
+  "usb_selective_suspend": {
+    "host_remained_running": true,
+    "kernel_suspend_state_verified": true,
+    "kernel_resume_state_verified_before_forced_restore": true,
+    "remote_wakeup_enabled": true,
+    "owner_confirmed_all_lights_off": true,
+    "owner_confirmed_keypress_woke_keyboard": true,
+    "owner_confirmed_lighting_returned": true,
+    "owner_typed_confirmation_after_resume": true,
+    "original_power_settings": {
+      "control": "on",
+      "autosuspend_delay_ms": "2000"
+    },
+    "original_power_settings_restored": true,
+    "suspend_observed_seconds_after_enabling": 1.203,
+    "resume_observed_seconds_after_enabling": 20.343,
+    "full_host_system_suspend_tested": false,
+    "method": "Temporarily set only the MD770 USB device autosuspend_delay_ms to 1000 and control to auto; observed runtime_status; restored the original values in finally"
+  },
+  "physically_tested_dip_switch_sets": [
+    [],
+    [
+      1
+    ],
+    [
+      2
+    ],
+    [
+      3
+    ],
+    [
+      4
+    ],
+    [
+      1,
+      3
+    ],
+    [
+      2,
+      4
+    ]
+  ]
+}
