@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare the recorded right-half recovery package without accessing USB."""
+"""Prepare a recorded MD770 recovery package without accessing USB."""
 
 import argparse
 from datetime import datetime, timezone
@@ -17,42 +17,71 @@ def _require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
-parser = argparse.ArgumentParser(
-    description="Prepare the known US 7.02 right-half recovery package offline"
-)
+parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("output", type=Path)
 parser.add_argument("--updater", type=Path, required=True)
 parser.add_argument("--iap", type=Path, required=True)
 parser.add_argument("--binary", type=Path, required=True)
 parser.add_argument("--runtime", type=Path, required=True)
+parser.add_argument("--half", choices=("right", "left"), default="right")
+parser.add_argument("--option-reply", type=Path)
 args = parser.parse_args()
 repo = Path(__file__).resolve().parents[1]
 updater = args.updater
 iap_path = args.iap
 tool = repo / "tools/ht32-dfu-tool"
+left = args.half == "left"
+prefix = "mistel-md770-left" if left else "mistel-md770"
+group = "g3e8" if left else "g4e8"
 extractor = runpy.run_path(str(repo / "scripts/md770-extract.py"))
 with tempfile.TemporaryDirectory(prefix="md770-package-extract-") as temporary:
     extraction = extractor["extract"](updater, Path(temporary))
-    app = (Path(temporary) / f"{updater.stem}.g4e8.firmware.bin").read_bytes()
-    version = (Path(temporary) / f"{updater.stem}.g4e8.version.bin").read_bytes()
+    app = (Path(temporary) / f"{updater.stem}.{group}.firmware.bin").read_bytes()
+    version = (Path(temporary) / f"{updater.stem}.{group}.version.bin").read_bytes()
 iap = iap_path.read_bytes()
-live = json.loads((repo / "docs/mistel-md770-live-info.json").read_text())
-rom = json.loads((repo / "docs/mistel-md770-rom-info.json").read_text())
-check = json.loads((repo / "docs/mistel-md770-updater-check.json").read_text())
-preflight = json.loads((repo / "docs/mistel-md770-rom-preflight.json").read_text())
-restore = json.loads((repo / "docs/mistel-md770-stock-restore.json").read_text())
-_require(
-    restore["restoration_verified"]
-    and restore["full_main_flash_readback_matched"]
-    and restore["documented_protection_words_readback_matched"]
-    and restore["post_restore_updater_entry_checksums_and_return_verified"],
-    "Stock-restoration verification is incomplete",
-)
-_require(
-    preflight["restore_client_info_preflight_passed"]
-    and preflight["all_37_samples_matched"],
-    "ROM preflight is incomplete",
-)
+live = json.loads((repo / f"docs/{prefix}-live-info.json").read_text())
+rom = json.loads((repo / f"docs/{prefix}-rom-info.json").read_text())
+check = json.loads((repo / f"docs/{prefix}-updater-check.json").read_text())
+restore = json.loads((repo / f"docs/{prefix}-stock-restore.json").read_text())
+if left:
+    backup = json.loads((repo / f"docs/{prefix}-iap-backup.json").read_text())
+    _require(
+        backup["passes_identical"]
+        and backup["second_fresh_session_pass_obtained"]
+        and backup["calibration_checks_passed"] == 37
+        and all(
+            backup[key]["all_24_page_crcs_matched"]
+            and backup[key]["whole_region_crc_matched"]
+            for key in ("pass_1", "pass_2")
+        ),
+        "Two verified left-IAP reads are required",
+    )
+    _require(
+        rom["info_transfer_bytes"] == rom["option_transfer_bytes"] == 64
+        and rom["option_checksum_valid"]
+        and rom["normal_usb_return_verified"]
+        and rom["model_word"] == "0x00052352"
+        and rom["rom_version"] == "0x0103"
+        and rom["page_size_bytes"] == 512
+        and rom["usable_flash_pages"] == 255,
+        "Left ROM preflight is incomplete",
+    )
+    expected_tool_sha256 = rom["tool_sha256"]
+else:
+    preflight = json.loads((repo / "docs/mistel-md770-rom-preflight.json").read_text())
+    _require(
+        restore["restoration_verified"]
+        and restore["full_main_flash_readback_matched"]
+        and restore["documented_protection_words_readback_matched"]
+        and restore["post_restore_updater_entry_checksums_and_return_verified"],
+        "Stock-restoration verification is incomplete",
+    )
+    _require(
+        preflight["restore_client_info_preflight_passed"]
+        and preflight["all_37_samples_matched"],
+        "ROM preflight is incomplete",
+    )
+    expected_tool_sha256 = preflight["restore_client_sha256"]
 _require(
     check["success"] and check["normal_usb_return_verified"],
     "Stock-updater check is incomplete",
@@ -68,14 +97,22 @@ _require(
 _require(
     len(iap) == 0x3000
     and hashlib.sha256(iap).hexdigest()
-    == "61e377ee21584a7bce42a2a9532a40b6682ba9d1a095cfe08708555ab7e5bd4e",
+    == (
+        "29a4cb40d5b0a4c0280a39bbaa0c58d7f6b93969e8499b4597923b9482565614"
+        if left
+        else "61e377ee21584a7bce42a2a9532a40b6682ba9d1a095cfe08708555ab7e5bd4e"
+    ),
     "Wrong stock-IAP backup",
 )
 _require(
-    len(app) == 49008
+    len(app) == (36404 if left else 49008)
     and hashlib.sha256(app).hexdigest()
-    == "8fafdca096756f23626802d5b586b270b0bd512fe5d1c0327db4eafcd4f689b2",
-    "Wrong US 7.02 application",
+    == (
+        "febc84d9dc1fd23152218232839279ecb59f255615a6d6c5b4d951a848c85064"
+        if left
+        else "8fafdca096756f23626802d5b586b270b0bd512fe5d1c0327db4eafcd4f689b2"
+    ),
+    "Wrong stock US application for the selected half",
 )
 _require(len(version) == 180, "Wrong version-template length")
 _require(
@@ -84,8 +121,8 @@ _require(
 )
 version_page = version + b"\xff" * (512 - len(version))
 _require(
-    version_page[:480] == bytes.fromhex(live["version_page_hex"]),
-    "Version page differs from its live read",
+    version_page[:480] == bytes.fromhex(live.get("version_page_hex", "")),
+    "A matching 480-byte live version-page read is required",
 )
 _require(
     struct.unpack_from("<I", version_page, 0xB0)[0] == 0x001C5AA5,
@@ -101,32 +138,54 @@ _require(
 )
 _require(
     hashlib.sha256(main).hexdigest()
-    == "8d961215101b93760d20dfbc717f6cd6a2fa879fae26e71a478089df39095ffd",
+    == (
+        "eb6eb73f6d929958bb7c0d72d5f3d919c20cf96985284a3c55ea8717d5c85b28"
+        if left
+        else "8d961215101b93760d20dfbc717f6cd6a2fa879fae26e71a478089df39095ffd"
+    ),
     "Reconstructed image differs from the independently reviewed hash",
 )
 protection = {
-    key: rom["option_words"][key]
-    for key in ("pp0", "pp1", "pp2", "pp3", "cp", "checksum_stored")
+    key: rom["option_words"][key] for key in ("pp0", "pp1", "pp2", "pp3", "cp")
 }
+protection["checksum_stored"] = (
+    rom["option_checksum"] if left else rom["option_words"]["checksum_stored"]
+)
 _require(
     sum(int(protection[key], 16) for key in ("pp0", "pp1", "pp2", "pp3", "cp"))
     & 0xFFFFFFFF
     == int(protection["checksum_stored"], 16),
     "Invalid original option checksum",
 )
+option_reply = (
+    args.option_reply.read_bytes()
+    if args.option_reply
+    else bytes.fromhex(rom.get("option_reply_hex", ""))
+)
+_require(
+    len(option_reply) == 64,
+    "Supply the original 64-byte option reply for the left half",
+)
+_require(
+    struct.unpack_from("<5I", option_reply)
+    == tuple(int(protection[key], 16) for key in ("pp0", "pp1", "pp2", "pp3", "cp"))
+    and struct.unpack_from("<I", option_reply, 32)[0]
+    == int(protection["checksum_stored"], 16),
+    "Option reply differs from the documented protection",
+)
 files = {
     "stock-iap.bin": iap,
     "stock-application.bin": app,
     "stock-version-page.bin": version_page,
     "stock-main-flash.bin": bytes(main),
-    "observed-rom-option-reply.bin": bytes.fromhex(rom["option_reply_hex"]),
+    "observed-rom-option-reply.bin": option_reply,
     updater.name: updater.read_bytes(),
     "original-protection.json": (json.dumps(protection, indent=2) + "\n").encode(),
     "extractor-manifest.json": (json.dumps(extraction, indent=2) + "\n").encode(),
-    "README.md": (repo / "docs/right-recovery-package.md").read_bytes(),
+    "README.md": (repo / f"docs/{args.half}-recovery-package.md").read_bytes(),
     "nix-runtime.nar.zst": args.runtime.read_bytes(),
 }
-for name in (
+record_names = (
     "mistel-md770-live-info.json",
     "mistel-md770-rom-info.json",
     "mistel-md770-iap-backup.json",
@@ -138,7 +197,19 @@ for name in (
     "mistel-md770-stock-restore-program.txt",
     "mistel-md770-stock-restore-cold-preflight.txt",
     "mistel-md770-stock-restore-continuation.txt",
-):
+)
+if left:
+    record_names = tuple(
+        f"{prefix}-{suffix}.json"
+        for suffix in (
+            "live-info",
+            "rom-info",
+            "iap-backup",
+            "updater-check",
+            "stock-restore",
+        )
+    )
+for name in record_names:
     files[name] = (repo / "docs" / name).read_bytes()
 for name in (
     "Cargo.toml",
@@ -154,19 +225,21 @@ for name in (
 files["ht32-dfu-tool"] = args.binary.read_bytes()
 _require(
     hashlib.sha256(files["ht32-dfu-tool"]).hexdigest()
-    == preflight["restore_client_sha256"]
+    == expected_tool_sha256
     == restore["utility_sha256"],
     "Use the ROM-preflighted binary or record a fresh preflight first",
 )
 manifest: dict[str, Any] = {
-    "created_utc": datetime.now(timezone.utc).isoformat(),
-    "unit": "red-switch MD770 RGB BT right half, KB0419, US V1.07.02",
+    "date": datetime.now(timezone.utc).date().isoformat(),
+    "unit": "MD770 RGB BT left half, KB041A, US V1.04.01"
+    if left
+    else "red-switch MD770 RGB BT right half, KB0419, US V1.07.02",
     "image_kind": "Reconstructed restoration image; not an original full-flash dump",
     "layout": {
         "iap": "0x0000..0x2fff",
         "version": "0x3000..0x31ff",
-        "app": "0x3200..0xf16f",
-        "erased_padding": "0xf170..0x1fdff",
+        "app": f"0x3200..0x{0x3200 + len(app) - 1:04x}",
+        "erased_padding": f"0x{0x3200 + len(app):04x}..0x1fdff",
         "option_page_excluded": "0x1fe00..0x1ffff",
     },
     "version_page_final_32_bytes": "ff padding from the canonical updater template, not directly read",
@@ -174,8 +247,8 @@ manifest: dict[str, Any] = {
     "tool_upstream_revision": "848fc071c8f2429bf41f3bd40c60ec9bc5433b72",
     "rom_writer_preflight_verified": True,
     "runtime_platform": "x86_64-linux with Nix; exact shared-library closure included",
-    "restoration_hardware_tested": True,
-    "restoration_record": "mistel-md770-stock-restore.json",
+    "restoration_hardware_tested": restore["restoration_verified"],
+    "restoration_record": f"{prefix}-stock-restore.json",
     "stock_settings_preservation_required": False,
     "files": {
         name: {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}

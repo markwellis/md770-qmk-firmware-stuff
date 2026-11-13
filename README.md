@@ -37,6 +37,7 @@ revisions or IAP contents.
 - [Prior research and primary sources](docs/mistel-md770-prior-art.md)
 - [Stock lighting experiments](docs/mistel-md770.md)
 - [Prepared right-half recovery procedure](docs/right-recovery-package.md)
+- [Prepared left-half stock-restore test, awaiting approval](docs/left-recovery-package.md)
 - [Verified right-half stock restore and its logs](docs/mistel-md770-stock-restore.json)
 
 The photographs under `docs/mistel-md770-photos/` are JPEGs with EXIF,

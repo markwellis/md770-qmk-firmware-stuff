@@ -115,6 +115,12 @@ The canonical private backup is `MD770L_IAP_041A_stock_20261113.bin`.
 No flash or protection changes were made. Left stock restoration remains
 untested; matching read-only backups do not establish successful restoration.
 
+The [prepared stock-restore test](left-recovery-package.md) now has a
+verified package and an independently verified backup copy. The
+[planned test record](mistel-md770-left-stock-restore.json) distinguishes
+preparation from authorisation and execution. No erase or programming
+has been authorised or attempted.
+
 After unplugging USB and reconnecting with SEL4 open, the left half
 returned to `04d9:041a` application mode with unchanged boot information.
 The owner confirmed normal typing. Both backup passes and the ROM checks

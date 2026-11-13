@@ -13,6 +13,20 @@ spec.loader.exec_module(updater)
 
 
 class DiagnosticProtocolTest(unittest.TestCase):
+    def test_version_page_reads_only_the_eight_exposed_slices(self):
+        with patch.object(
+            updater, "request", side_effect=lambda fd, cmd, sub: bytes([sub]) * 60
+        ) as request:
+            page = updater.read_version_page(7)
+        self.assertEqual(page, b"".join(bytes([sub]) * 60 for sub in range(0x20, 0x28)))
+        self.assertEqual(len(page), 480)
+        self.assertEqual(
+            [call.args for call in request.call_args_list],
+            [(7, 0x12, sub) for sub in range(0x20, 0x28)],
+        )
+        with self.assertRaises(ValueError):
+            updater.packet(0x12, 0x28)
+
     def test_left_updater_checksums_and_return_use_left_usb_ids(self):
         image = bytes(36404)
         info = bytes.fromhex("0400000000000000d9041a1480600404").ljust(52, b"\xff")

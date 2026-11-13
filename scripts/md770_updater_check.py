@@ -44,6 +44,7 @@ XOR_KEY = struct.pack(
 )
 ALLOWED = frozenset(
     [(0x11, 0), (0x11, 1), (0x12, 0), (0x12, 1), (0x12, 2), (0x1D, 1), (0x1D, 2)]
+    + [(0x12, subcommand) for subcommand in range(0x20, 0x28)]
 )
 
 
@@ -134,6 +135,11 @@ def request(fd: int, command: int, subcommand: int, data: bytes = b"") -> bytes:
     return reply_data(command, subcommand, os.read(fd, 64))
 
 
+def read_version_page(fd: int) -> bytes:
+    """Read the 480 version-page bytes exposed by the stock application."""
+    return b"".join(request(fd, 0x12, subcommand) for subcommand in range(0x20, 0x28))
+
+
 def return_application(
     physical: str,
     expected_info: bytes,
@@ -184,6 +190,7 @@ def check(
                 raise RuntimeError("Application boot information changed")
             if request(fd, 0x12, 1)[:4] != bytes.fromhex("04000200"):
                 raise RuntimeError("Unexpected application header word")
+            report["version_page_hex"] = read_version_page(fd).hex()
             entry_attempted = True
             send(fd, 0x11, 0)
             report["entry_reset_sent"] = True
