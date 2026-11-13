@@ -37,6 +37,7 @@ typedef struct {
             uint8_t col, row;
         } key;
         bool pressed;
+        uint8_t type;
     } event;
 } keyrecord_t;
 typedef struct {
@@ -114,3 +115,6 @@ rgb_t   rgb_matrix_hsv_to_rgb(hsv_t colour);
 void    rgb_matrix_set_color(unsigned index, uint8_t red, uint8_t green, uint8_t blue);
 bool    rgb_matrix_check_finished_leds(unsigned last);
 uint8_t scale8(uint8_t value, uint8_t scale);
+
+#define KEY_EVENT 1
+#define IS_KEYEVENT(event) ((event).type == KEY_EVENT)

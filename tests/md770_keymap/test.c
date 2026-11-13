@@ -127,7 +127,7 @@ uint16_t keycode_at_keymap_location_raw(uint8_t layer, uint8_t row, uint8_t col)
 }
 
 static bool event(uint16_t code, uint8_t row, uint8_t col, bool pressed) {
-    keyrecord_t record = {.event = {.key = {.row = row, .col = col}, .pressed = pressed}};
+    keyrecord_t record = {.event = {.type = KEY_EVENT, .key = {.row = row, .col = col}, .pressed = pressed}};
     return process_record_user(code, &record);
 }
 static void toggle_edit(void) {
@@ -147,6 +147,18 @@ int main(void) {
     assert(indicator == 7 && enabled && effect == RGB_MATRIX_CUSTOM_MD770_CUSTOM);
     assert(event(MO(FN), 2, 4, false));
     assert(event(KC_B, 15, 4, false));
+
+    keyrecord_t synthetic = {.event = {.key = {.row = 251, .col = 0}, .type = 6, .pressed = false}};
+    assert(process_record_user(KC_A, &synthetic));
+    synthetic.event.type = 4;
+    synthetic.event.key.row = 0;
+    synthetic.event.pressed = true;
+    assert(process_record_user(KC_A, &synthetic));
+    synthetic.event.type = KEY_EVENT;
+    synthetic.event.key.row = 255;
+    synthetic.event.key.col = 255;
+    assert(process_record_user(KC_A, &synthetic));
+    assert(md770_custom_colours[0].v == 0);
 
     layer_state = 1UL << PN;
     assert(!event(KC_A, 12, 2, true));
