@@ -9,9 +9,8 @@ stock-IAP backups.
 Split typing and cold reconnect passed after restoring right PB11's stock
 active state in QMK commit `ea746927f6`. See the [right](mistel-md770-right-qmk-first-test.json),
 [left](mistel-md770-left-qmk-first-test.json) and
-[split](mistel-md770-qmk-split-test.json) records. RGB, complete key/modifier
-coverage, the remaining DIP functions, settings persistence and held-key
-split-cable-loss behaviour remain unverified.
+[split](mistel-md770-qmk-split-test.json) records. These describe the baseline
+before the RGB feature build and persistence correction recorded below.
 
 The preceding paired baseline used clean QMK images with RGB Matrix and
 the console disabled. The feature images described below now replace them.
@@ -85,13 +84,12 @@ Pn+Insert now requests three 100 ms on/off flashes on both indicators before
 updater entry. The stock IAP owns the LEDs after reset. The owner confirmed
 visible entry flashes. The updater's identity, version page and both installed
 application checksums matched, and its normal-return command restored QMK.
-No flash write or erase occurred during that check. Remaining DIP functions,
-complete key coverage and suspend still need bench checks.
-Full key coverage, remaining DIP combinations, settings persistence, USB
-suspend/wake and held-key split-cable-loss recovery still need bench checks.
+No flash write or erase occurred during that check. Complete key/modifier
+and Fn coverage, DIP2–4 and all DIP combinations, USB suspend/wake and
+held-key split-cable-loss recovery still need bench checks.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
-strict lint and formatting checks. Eighteen host tests pass, covering UART
+strict lint and formatting checks. Twenty-one QMK unit tests pass, covering UART
 framing, SPI erase geometry and DIP behaviour. Five firmware configurations
 build: both defaults, right VIA and both halves without RGB Matrix.
 The first right-half hardware build disables RGB animations. The port
@@ -155,14 +153,16 @@ from the short manual descriptions.
 
 Vendor macro programming and Bluetooth are outside the wired QMK port.
 Pn lighting uses native QMK effects and a named palette, not the vendor
-effect engine. Per-key vendor colour editing is not reproduced.
+effect engine. Pn+F9/F10 edit and display saved per-key QMK colours.
 Vial-specific code belongs downstream; it is not accepted in upstream QMK.
 
 ## Before submission
 
-Complete the dependency updates and document a supported flashing workflow.
-Then validate both halves on hardware: every key, the split link, all DIP
-combinations, Mac/Fn behaviour, lighting, settings and USB reconnect/suspend.
+Complete the dependency updates and the remaining hardware checks before
+submission: every key/modifier and Fn shortcut, DIP2–4 and all switch
+combinations, USB suspend/wake and held-key split-cable-loss recovery.
+The supported flashing workflow is documented in [USB installation](usb-flashing.md).
+The tested wired features and persistence results are recorded above.
 Keep research images, dumps, decompiler output and host recovery tools in
 this repository rather than the QMK keyboard directory.
 

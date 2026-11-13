@@ -27,7 +27,7 @@ been removed. RGB still needs hardware validation.
 - A one-line DIP polarity correction passed DIP1 OFF/ON/OFF and cold reconnect testing.
 - Left-half USB installation, basic typing, Shift/Caps Lock, cold reconnect and Escape-on-connect updater entry/return passed with SEL4 open.
 - Split typing and cold reconnect passed after restoring the stock right PB11 active state.
-- Complete key coverage, remaining DIP functions/combinations, RGB, settings persistence and held-key cable-loss recovery remain untested.
+- Complete key/modifier and Fn coverage, remaining DIP functions/combinations, USB suspend/wake and held-key cable-loss recovery remain untested.
 
 The feature build includes dedicated Caps Lock/profile indicators, the
 three programmable profiles and reset controls, saved per-key lighting,
