@@ -11,6 +11,8 @@ bool            shutdown_kb(bool bootloader);
 PWMDriver       PWMD_GPTM0, PWMD_MCTM0;
 static unsigned pwm_writes, mode_writes, sleep_calls, wake_calls;
 static unsigned modes[64];
+static unsigned entry_edges;
+static bool checking_entry;
 
 void pwmStart(PWMDriver *driver, const PWMConfig *config) {
     assert(config->frequency == 24000000 && config->period == UINT16_MAX);
@@ -38,7 +40,14 @@ bool shutdown_user(bool bootloader) {
     return true;
 }
 void wait_ms(unsigned ms) {
-    assert(ms == 250);
+    if (checking_entry) {
+        assert(ms == 100);
+        uint16_t expected = entry_edges++ % 2 ? 0 : 6000;
+        assert(PWMD_GPTM0.width[0] == expected && PWMD_GPTM0.width[1] == expected);
+        assert(PWMD_GPTM0.width[2] == expected && PWMD_MCTM0.width[0] == expected);
+    } else {
+        assert(ms == 250);
+    }
 }
 
 int main(void) {
@@ -64,7 +73,12 @@ int main(void) {
     led_update_ports((led_t){.caps_lock = true});
     suspend_wakeup_init_kb();
     assert(wake_calls == 1 && PWMD_GPTM0.width[2] == 6000 && PWMD_MCTM0.width[0] == 6000);
+    checking_entry = true;
     assert(shutdown_kb(true));
+    checking_entry = false;
+    assert(entry_edges == 6 && PWMD_GPTM0.width[2] == 0);
+    assert(PWMD_GPTM0.width[0] == 0 && PWMD_GPTM0.width[1] == 0 && PWMD_MCTM0.width[0] == 0);
+    assert(shutdown_kb(false));
     assert(PWMD_GPTM0.width[0] == 6000 && PWMD_GPTM0.width[1] == 6000 && PWMD_MCTM0.width[0] == 6000);
     puts("Indicator initialisation, PWM limits, Caps/profile independence and suspend/resume passed.");
 }

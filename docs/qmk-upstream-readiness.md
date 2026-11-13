@@ -13,7 +13,8 @@ active state in QMK commit `ea746927f6`. See the [right](mistel-md770-right-qmk-
 coverage, the remaining DIP functions, settings persistence and held-key
 split-cable-loss behaviour remain unverified.
 
-Both halves now run clean QMK images with RGB Matrix and the console disabled.
+The preceding paired baseline used clean QMK images with RGB Matrix and
+the console disabled. The feature images described below now replace them.
 The right image has SHA-256
 `ca6756e58bf8c59cabdd2a18070a8e3cb7e960fa4d63f2a5ea8a414a31395d89`.
 The left image has SHA-256
@@ -25,15 +26,15 @@ cross-half Shift work, including after a cold USB reconnect. No PCB bridge
 was needed. The owner also confirmed Fn calculator, screenshot and volume
 up/down shortcuts. Caps Lock changes letter case after the host's disable
 option is temporarily removed, but the keyboard shows no Caps Lock indicator.
-The installed baseline lacks indicator support. The implementation below
-adds it to the next build. Diagnostic code is absent from the QMK tree.
+The preceding baseline lacked indicator support. The feature build below
+adds it. Diagnostic code is absent from the QMK tree.
 
 ## Complete wired feature build
 
 The reviewed implementation is QMK commit `c80470f32e`. See the
 [build and verification record](mistel-md770-qmk-complete-build.json).
 
-The next build adds dedicated Caps Lock and profile indicators using the
+The feature build adds dedicated Caps Lock and profile indicators using the
 stock timer routing, polarity, frequency and duty. These work independently
 of RGB Matrix. It also adds the three native QMK profile overlays, persistent
 layout/profile selection, profile reset after key release, the physical
@@ -59,8 +60,31 @@ uses a separate firmware fork and remains a downstream integration choice.
 Native QMK/VIA remapping and macros replace the vendor's programming editor;
 the stock macro bytecode engine and Bluetooth remain outside the wired port.
 
-Next, flash the reviewed feature build through normal USB and validate the
-new controls on hardware. The currently installed images keep RGB disabled.
+Both feature images passed normal USB programming, application/version
+checks and QMK enumeration. The owner confirmed joined typing, the red Caps
+Lock indicator on LED2, profile colours on LED1 and RGB on/off across both
+halves. Per-key painting also works before reconnect. Cold reconnect loses
+both the saved colours and profile selection in the original feature build.
+
+The SPI backend's default block count erased only one 4 KiB sector despite
+the configured 8 KiB backing store. The checksum at `0x1000` and journal from
+`0x1008` therefore remained dirty. QMK commit `43cb16c512` derives two erase
+blocks from the configured allocation. The real wear-levelling/backend
+[regression](../tests/md770_storage/README.md) passes dirty-flash erasure,
+cold reload, journal consolidation and allocation bounds; the old configuration
+fails the two-sector assertion. The right default and optional VIA builds
+pass. The left image is unaffected.
+
+The corrected right image, including the updater-entry indicator cue, is
+built from QMK commit `aa420b6e36`. USB installation and the full both-Alt
+reset passed. The selected red profile survives cold reconnect. Saved A/J
+colours and the active custom-lighting mode also survive reconnect without
+Pn+F10. This validates the storage correction on the recorded hardware.
+
+Pn+Insert now requests three 100 ms on/off flashes on both indicators before
+updater entry. The stock IAP owns the LEDs after reset. The blink cue and
+updater round trip are being checked. Remaining DIP functions, complete key
+coverage and suspend still need bench checks.
 Full key coverage, remaining DIP combinations, settings persistence, USB
 suspend/wake and held-key split-cable-loss recovery still need bench checks.
 

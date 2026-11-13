@@ -29,12 +29,15 @@ been removed. RGB still needs hardware validation.
 - Split typing and cold reconnect passed after restoring the stock right PB11 active state.
 - Complete key coverage, remaining DIP functions/combinations, RGB, settings persistence and held-key cable-loss recovery remain untested.
 
-The next feature build adds dedicated Caps Lock/profile indicators, the
+The feature build includes dedicated Caps Lock/profile indicators, the
 three programmable profiles and reset controls, saved per-key lighting,
 USB lighting sleep and stale-link lighting recovery. See the
 [implementation checkpoint](docs/qmk-upstream-readiness.md#complete-wired-feature-build)
 and optional [VIA definition](via/README.md). These additions still need
-hardware validation; the installed baseline remains the tested no-RGB build.
+further hardware validation. Both feature images passed USB programming,
+paired typing, Caps/profile indicators and RGB on/off across both halves.
+The corrected right image also passed factory reset and saved profile/colour
+persistence across cold reconnect.
 
 The recorded unit has red switches. A second brown-switch keyboard has
 not been checked. Switch colour alone does not establish identical PCB

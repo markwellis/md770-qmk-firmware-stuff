@@ -3,7 +3,8 @@
 These compile the actual QMK source with mocked host/hardware services.
 They check colour-editor press/release pairing, held Fn, saved colours,
 physical Alt reset timing, deferred profile rewrites, early indicator calls,
-PWM limits, Caps/profile independence and suspend/resume. They do not prove
+PWM limits, Caps/profile independence, suspend/resume and the three-pulse
+updater-entry cue. They do not prove
 physical wiring, LED current or firmware timing on the keyboard.
 
 Run from this repository with the QMK checkout beside it:
