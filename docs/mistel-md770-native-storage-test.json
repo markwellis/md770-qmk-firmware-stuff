@@ -34,5 +34,14 @@
   "board_spi_timeout_ms": 5000,
   "board_wake_delay_us": 20,
   "native_test_application_sha256": "f04a2efdbba23d374d14e45e0b83a2d844f092485ccb6d1f52a3050ade6e4361",
-  "raw_backups_published": false
+  "raw_backups_published": false,
+  "clean_candidate_source": "b6027a5466",
+  "clean_integration_source": "351e1ddffe",
+  "clean_right_application_sha256": "0836bdfb8bee21415bf3607b06397f354db6bba718e772374b0e07ae64655cfe",
+  "clean_left_application_sha256": "0306ecb4ae9b0b5d519c149ddd10331f083084b6cb4fa0d3380479866497f000",
+  "both_clean_images_installed": true,
+  "diagnostic_handler_removed": true,
+  "owner_confirmed_cold_reconnect_paired_typing": true,
+  "owner_confirmed_red_profile_persisted": true,
+  "owner_confirmed_both_spaces_and_cross_half_shift": true
 }
