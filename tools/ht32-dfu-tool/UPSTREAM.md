@@ -17,8 +17,10 @@ tests and strict Clippy passed. Stock restoration passed on the recorded
 right half, including full byte and option-word readback, cold boot,
 typing and updater checks. Its interrupted SEL2 contact required cold
 ROM re-entry and a continuation without `--mass-erase`.
-The separate CRC-only reader has three host tests and
-37 successful live calibration checks; it cannot erase or program flash.
+The separate CRC-only reader has four host tests covering both recorded
+information anchors. Its default targets right US 7.02; `--left` selects
+left US 4.01. Both halves have passed 37 live calibration checks. The
+reader cannot erase or program flash.
 
 The known full recovery image is 130,560 bytes. It uses 2,511 write
 requests, including a final batch of 21 and a final payload of 40 bytes.

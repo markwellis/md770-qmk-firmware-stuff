@@ -11,8 +11,10 @@ byte-identical right-half stock-IAP backups. A later stock-updater check
 used its software entry/return resets and verified application checksums.
 Those initial queries performed no flash write, erase or protection change.
 
-**Right-half stock restoration is verified on this unit. Left-half recovery
-remains untested.** The ROM
+**Right-half stock restoration is verified on this unit. Left-half ROM entry
+and two matching IAP backups are also verified; left stock restoration
+remains untested.** See the [left investigation](left-recovery-investigation.md).
+The ROM
 queries returned coherent option data with read security and option-byte
 protection enabled. The verified right-IAP backup is kept outside this repository as `red_right_MD770R_IAP_0419_stock_20261112.bin`.
 
@@ -467,7 +469,8 @@ typing and the restored updater's checksum/return operation.
 The `red_right` name identifies the owner's red-switch keyboard and right
 half. A second MD770 has brown switches. Switch type alone does not
 establish identical PCB revisions or bootloader contents; the second unit
-and this unit's left half have not been backed up.
+has not been backed up. This unit's left half was subsequently backed up
+in [two fresh ROM sessions](mistel-md770-left-iap-backup.json).
 
 Astra's final maximum-effort review found no blocking defect in the reader.
 It independently reproduced the reconstruction, checked all backup copies

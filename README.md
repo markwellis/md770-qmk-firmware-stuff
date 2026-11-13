@@ -19,7 +19,8 @@ not been flashed or tested on the keyboard.
 - Stock-updater entry, application checksum comparison and normal return passed.
 - Stock restoration passed on the recorded right half, including full byte readback and protection-word verification.
 - Cold boot, right-half typing and the restored stock updater's checksum/return checks passed.
-- QMK operation and left-half recovery remain untested.
+- Left-half ROM entry and two matching stock-IAP backups are verified.
+- QMK operation and left-half stock restoration remain untested.
 
 The recorded unit has red switches. A second brown-switch keyboard has
 not been checked. Switch colour alone does not establish identical PCB

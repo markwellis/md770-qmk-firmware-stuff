@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-13",
+  "half": "left",
+  "target": "MD770BT-S US 4.01, ROM 04d9:8010 v1.03",
+  "region": {
+    "start": "0x00000000",
+    "end_exclusive": "0x00003000",
+    "bytes": 12288
+  },
+  "independent_rom_entry_verified": true,
+  "method": "Read-only 02/00 CRC reconstruction using the separately read 52-byte stock information anchor",
+  "calibration_checks_passed": 37,
+  "live_anchor_record": "docs/mistel-md770-left-live-info.json",
+  "rom_info_record": "docs/mistel-md770-left-rom-info.json",
+  "pass_1": {
+    "sha256": "29a4cb40d5b0a4c0280a39bbaa0c58d7f6b93969e8499b4597923b9482565614",
+    "bytes": 12288,
+    "initial_stack_pointer": "0x20001fe0",
+    "reset_vector": "0x000000b9",
+    "live_information_block_matched": true,
+    "all_24_page_crcs_matched": true,
+    "whole_region_crc_matched": true,
+    "reconstruction_queries": 6118,
+    "backup_file": "red_left_MD770L_IAP_041A_stock_20261113-pass1.bin"
+  },
+  "second_fresh_session_pass_obtained": true,
+  "restoration_verified": false,
+  "assurance_limit": "Page and whole-region CRCs do not independently establish the seed; correctness depends on the separately read anchor and CRC replies",
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "reset_command_sent": false,
+  "pass_2": {
+    "sha256": "29a4cb40d5b0a4c0280a39bbaa0c58d7f6b93969e8499b4597923b9482565614",
+    "bytes": 12288,
+    "fresh_rom_entry": true,
+    "live_information_block_matched": true,
+    "all_24_page_crcs_matched": true,
+    "whole_region_crc_matched": true,
+    "reconstruction_queries": 6118,
+    "backup_file": "red_left_MD770L_IAP_041A_stock_20261113-pass2.bin"
+  },
+  "passes_identical": true,
+  "canonical_backup_file": "MD770L_IAP_041A_stock_20261113.bin",
+  "normal_usb_return_verified": true,
+  "normal_usb_return": {
+    "usb_vid": "04d9",
+    "usb_pid": "041a",
+    "application_mode": 1,
+    "live_information_block_unchanged": true,
+    "typing_confirmed_by_owner": true,
+    "normal_usb_return_verified": true
+  }
+}

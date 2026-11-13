@@ -21,9 +21,10 @@ applications; the left contains JP and US applications. Updater metadata
 identifies these variants. The connected right half reports `V1.07.02`,
 version word `0x00070002`, and USB `04d9:0419`, matching the supplied right
 updater's version metadata. Its boot-information reply also contains the
-right application's header identifier. This is version-level agreement;
-an application checksum comparison has not established byte identity, and
-the installed left version has not been queried. The right USB descriptor
+right application's header identifier. Subsequent stock-IAP sum/CRC checks
+match both installed US applications: right 7.02 and left 4.01. See the
+[right](mistel-md770-updater-check.json) and [left](mistel-md770-left-updater-check.json)
+records. The right USB descriptor
 at `0xe550` has `bcdDevice 0710`, matching the connected keyboard; the EU
 and JP variants use `0720` and `0730`. This identifies the US layout variant.
 
@@ -567,7 +568,7 @@ checks include:
 
 - Whether removed components changed relevant power or connection paths.
 - SWD accessibility and bit-for-bit preservation of undocumented option metadata.
-- The left IAP's contents, protection state and physical recovery entry.
+- Left-half stock restoration and first QMK hardware tests.
 - Connector contact routing, actual waveforms and the LED driver's
   electrical limits.
 
@@ -577,11 +578,11 @@ of the actual unit:
 | Area | What the recovered software establishes | Remaining work |
 | --- | --- | --- |
 | Controller | Photographed HT50F52352 in a 64-lead package; ROM model-slot value `52352` | Validate operation on hardware; the OEM marking is not a literal HT32 part marking |
-| Clock/timer state | Application clock selection, divisors and timer settings; right IAP available for startup analysis | Explicitly initialise inherited registers in QMK and validate timing on hardware |
+| Clock/timer state | Application clock selection, divisors and timer settings; both IAPs available for startup analysis | Validate the prepared QMK clock and scan timing on hardware |
 | Key positions | Matrix-to-key tables, Fn/Pn and layout remaps | Match the US key layout and test each key; alternative-layout entries do not prove physical switches exist |
 | Split behaviour | UART pins, framing, checksums, payloads, scheduling and PB8 mode selection | Implement the recovered behaviour and test connection loss/reconnection; physical contact routing and waveforms remain unmeasured |
 | Persistent settings | SPI1 pin/mode assignments, external flash commands, global record and four profile sectors | Validate the prepared QMK backend on hardware after preserving the stock flash; broader stock macro allocation remains to be mapped |
-| Recovery | SEL2 ROM entry and two matching right-IAP backups; watchdog boot policy decoded | Complete restoration procedure and left-half backup remain outstanding |
+| Recovery | Right SEL2 and left SEL4 ROM entry; two matching IAP backups per half; both boot policies decoded; right stock restoration verified | Validate left stock restoration before calling its complete restore path tested |
 
 ### First port preparation and review
 

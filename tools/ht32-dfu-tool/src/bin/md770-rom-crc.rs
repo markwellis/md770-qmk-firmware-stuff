@@ -14,11 +14,15 @@ const CRC: Crc<u16> = Crc::<u16>::new(&CRC_16_XMODEM);
 const IAP_SIZE: usize = 0x3000;
 const INFO_ADDRESS: usize = 0x400;
 const INFO_HEX: &str = "0400000000000000d9041914c0500404ffffffff01000000ffffffff700100000002e70000024b423034313900000000ffffffff";
+const LEFT_INFO_HEX: &str = "0400000000000000d9041a1480600404ffffffff01000000ffffffff6c0100000002e70000024b423034314100000000ffffffff";
 
 #[derive(Parser)]
 struct Args {
-    /// Decoded stock US 7.02 application, used only for local comparisons.
+    /// Decoded stock US application for the selected half, used only for local comparisons.
     image: PathBuf,
+    /// Use the recorded left US 4.01 application and live information anchor.
+    #[arg(long)]
+    left: bool,
     /// Reconstruct and verify the protected 12 KiB stock IAP.
     #[arg(long, value_name = "FILE")]
     dump: Option<PathBuf>,
@@ -152,18 +156,17 @@ fn inverse_tables() -> Result<(Vec<u16>, Vec<u16>)> {
     Ok((suffix, prefix))
 }
 
-fn recover_iap<F, P>(mut crc_at: F, mut progress: P) -> Result<Vec<u8>>
+fn recover_iap<F, P>(info: &[u8], mut crc_at: F, mut progress: P) -> Result<Vec<u8>>
 where
     F: FnMut(u32, u32) -> Result<u16>,
     P: FnMut(usize, usize),
 {
-    let info = decode_hex(INFO_HEX)?;
     if info.len() != 52 {
         return Err("invalid information-block anchor".into());
     }
     let (suffix_inverse, prefix_inverse) = inverse_tables()?;
     let mut data = vec![0u8; IAP_SIZE];
-    data[INFO_ADDRESS..INFO_ADDRESS + info.len()].copy_from_slice(&info);
+    data[INFO_ADDRESS..INFO_ADDRESS + info.len()].copy_from_slice(info);
     let total = INFO_ADDRESS / 2 + (IAP_SIZE - INFO_ADDRESS - info.len()) / 2;
     let mut done = 0;
 
@@ -192,15 +195,17 @@ where
     Ok(data)
 }
 
-fn validate_iap<F>(data: &[u8], mut crc_at: F) -> Result<()>
+fn validate_iap<F>(data: &[u8], info: &[u8], mut crc_at: F) -> Result<()>
 where
     F: FnMut(u32, u32) -> Result<u16>,
 {
     if data.len() != IAP_SIZE {
         return Err("IAP dump has the wrong length".into());
     }
-    let info = decode_hex(INFO_HEX)?;
-    if data[INFO_ADDRESS..INFO_ADDRESS + info.len()] != info {
+    if info.len() != 52 {
+        return Err("invalid information-block anchor".into());
+    }
+    if &data[INFO_ADDRESS..INFO_ADDRESS + info.len()] != info {
         return Err("IAP information block differs from its live read".into());
     }
     let stack = u32::from_le_bytes(data[0..4].try_into()?);
@@ -234,8 +239,10 @@ fn main() -> Result<()> {
         return Err(format!("refusing to replace existing file: {}", path.display()).into());
     }
     let image = std::fs::read(args.image)?;
-    if image.len() != 49008 || image[..8] != [0xe0, 0x3f, 0, 0x20, 0xc1, 0x32, 0, 0] {
-        return Err("expected the decoded right US 7.02 application".into());
+    let expected_length = if args.left { 36404 } else { 49008 };
+    let info = decode_hex(if args.left { LEFT_INFO_HEX } else { INFO_HEX })?;
+    if image.len() != expected_length || image[..8] != [0xe0, 0x3f, 0, 0x20, 0xc1, 0x32, 0, 0] {
+        return Err("expected the recorded stock US application for the selected half".into());
     }
     let devices = rusb::devices()?;
     let mut matches = Vec::new();
@@ -269,11 +276,8 @@ fn main() -> Result<()> {
     handle.set_auto_detach_kernel_driver(true)?;
     handle.claim_interface(interface)?;
     let result = (|| -> Result<()> {
-        let info = decode_hex(INFO_HEX)?;
-        let mut samples: Vec<(u32, &[u8])> = vec![
-            (0x408, &[0xd9, 0x04, 0x19, 0x14]),
-            (0x3000, &[0x1a, 0, 0, 0]),
-        ];
+        let mut samples: Vec<(u32, &[u8])> =
+            vec![(0x408, &info[8..12]), (0x3000, &[0x1a, 0, 0, 0])];
         samples.extend(
             [(0, 4), (4, 4), (0, 8), (0, 16), (0, 64), (0xc0, 4), (2, 4)]
                 .map(|(offset, length)| (0x3200 + offset as u32, &image[offset..offset + length])),
@@ -305,6 +309,7 @@ fn main() -> Result<()> {
     if let Some(path) = args.dump {
         let mut queries = 0;
         let data = recover_iap(
+            &info,
             |address, length| {
                 queries += 1;
                 query(&handle, interface, endpoint, address, length, false)
@@ -316,7 +321,7 @@ fn main() -> Result<()> {
             },
         )?;
         println!("recovery_queries={queries}");
-        validate_iap(&data, |address, length| {
+        validate_iap(&data, &info, |address, length| {
             query(&handle, interface, endpoint, address, length, false)
         })?;
         let mut output = OpenOptions::new()
@@ -374,23 +379,38 @@ mod tests {
 
     #[test]
     fn reconstructs_the_iap_from_four_byte_crcs() {
-        let mut source: Vec<u8> = (0..IAP_SIZE)
-            .map(|index| ((index * 73) ^ (index >> 3)) as u8)
-            .collect();
-        let info = decode_hex(INFO_HEX).unwrap();
-        source[INFO_ADDRESS..INFO_ADDRESS + info.len()].copy_from_slice(&info);
-        let mut queries = 0;
-        let recovered = recover_iap(
-            |address, length| {
-                assert_eq!(length, 4);
-                queries += 1;
-                let address = address as usize;
-                Ok(CRC.checksum(&source[address..address + length as usize]))
-            },
-            |_, _| {},
-        )
-        .unwrap();
-        assert_eq!(recovered, source);
-        assert_eq!(queries, 6118);
+        for anchor in [INFO_HEX, LEFT_INFO_HEX] {
+            let mut source: Vec<u8> = (0..IAP_SIZE)
+                .map(|index| ((index * 73) ^ (index >> 3)) as u8)
+                .collect();
+            source[..4].copy_from_slice(&0x2000_1fe0u32.to_le_bytes());
+            source[4..8].copy_from_slice(&0xb9u32.to_le_bytes());
+            let info = decode_hex(anchor).unwrap();
+            source[INFO_ADDRESS..INFO_ADDRESS + info.len()].copy_from_slice(&info);
+            let mut queries = 0;
+            let recovered = recover_iap(
+                &info,
+                |address, length| {
+                    assert_eq!(length, 4);
+                    queries += 1;
+                    let address = address as usize;
+                    Ok(CRC.checksum(&source[address..address + length as usize]))
+                },
+                |_, _| {},
+            )
+            .unwrap();
+            assert_eq!(recovered, source);
+            assert_eq!(queries, 6118);
+            validate_iap(&recovered, &info, |address, length| {
+                Ok(CRC.checksum(&source[address as usize..(address + length) as usize]))
+            })
+            .unwrap();
+        }
+    }
+
+    #[test]
+    fn rejects_incomplete_anchors_without_queries() {
+        assert!(recover_iap(&[0; 51], |_, _| panic!("unexpected query"), |_, _| {}).is_err());
+        assert!(validate_iap(&[0; IAP_SIZE], &[0; 51], |_, _| panic!("unexpected query")).is_err());
     }
 }

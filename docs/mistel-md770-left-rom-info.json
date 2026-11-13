@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-13",
+  "half": "left",
+  "usb_vid": "04d9",
+  "usb_pid": "8010",
+  "entry": "SEL4 square PA9/BOOT lead35 bridged to round MCU ground at power-on; bridge removed before query",
+  "rom_version": "0x0103",
+  "model_word": "0x00052352",
+  "page_size_bytes": 512,
+  "usable_flash_pages": 255,
+  "option_words": {
+    "pp0": "0xfffff000",
+    "pp1": "0xffffffff",
+    "pp2": "0xffffffff",
+    "pp3": "0xffffffff",
+    "cp": "0xfffffffc"
+  },
+  "option_checksum": "0xffffeff9",
+  "option_checksum_valid": true,
+  "flash_security_enabled": true,
+  "option_byte_protection_enabled": true,
+  "info_transfer_bytes": 64,
+  "option_transfer_bytes": 64,
+  "tool_sha256": "1fdd57f6018070a1d9ff24213e197ebae1e543c017a568f1fad0b5f07b481bbf",
+  "flash_written_or_erased": false,
+  "protection_changed": false,
+  "reset_command_sent": false,
+  "stock_iap_backup_obtained": true,
+  "normal_usb_return_verified": true,
+  "stock_iap_backup_record": "docs/mistel-md770-left-iap-backup.json",
+  "normal_usb_return": {
+    "usb_vid": "04d9",
+    "usb_pid": "041a",
+    "application_mode": 1,
+    "live_information_block_unchanged": true,
+    "typing_confirmed_by_owner": true,
+    "normal_usb_return_verified": true
+  }
+}
