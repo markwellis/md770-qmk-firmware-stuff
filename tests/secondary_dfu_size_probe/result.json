@@ -1,0 +1,82 @@
+{
+  "status": "OFFLINE BUILD ONLY; ALWAYS DFU; NO APPLICATION JUMP; DO NOT FLASH",
+  "sources": {
+    "ht32_usb_dfu": "ffe44be6238f1446c15c04f6768b09f198a33f1b",
+    "kemove_lpc_dfu": "4cbfb9d889550fcd6a227fed68cfeb9787aeb86b",
+    "qmk_firmware": "42e3f8dd2fdd450533316dda28b18d47806609d3",
+    "chibios": "6170ddf92d55be54c89b708d1882eea229edeb2c",
+    "chibios_contrib": "410d3636a15485aefc74559a52e38c8a642b8ad9"
+  },
+  "compiler": "arm-none-eabi-gcc Arm GNU Toolchain 15.2.Rel1, 15.2.1 20251203",
+  "cpu": "cortex-m0plus",
+  "protocol": "OpenKemove USB DFU implementation; unchanged except header geometry",
+  "fmc_backend": "hansemro HT32 backend, unchanged; private evaluation only, licensing unresolved",
+  "binary_bytes": 10616,
+  "binary_sha256": "efe9721711e4e67093c516f809d10051df02613b930458c5938ca6f0befdbab0",
+  "elf_sha256": "6c88f1dc35ab8fa0acec90ac535fe6bde61c5f787528b3328e9c26f2230a029a",
+  "sections": {
+    ".md770_app_record": {
+      "size_bytes": 12,
+      "address": 15352
+    },
+    ".mstack": {
+      "size_bytes": 1024,
+      "address": 536870912
+    },
+    ".pstack": {
+      "size_bytes": 1024,
+      "address": 536871936
+    },
+    ".vectors": {
+      "size_bytes": 192,
+      "address": 12800
+    },
+    ".text": {
+      "size_bytes": 7280,
+      "address": 15364
+    },
+    ".rodata": {
+      "size_bytes": 772,
+      "address": 22644
+    },
+    ".data": {
+      "size_bytes": 4,
+      "address": 536872960
+    },
+    ".bss": {
+      "size_bytes": 2976,
+      "address": 536872968
+    },
+    ".heap": {
+      "size_bytes": 11320,
+      "address": 536875944
+    }
+  },
+  "flash_start": 12800,
+  "flash_end_exclusive": 23416,
+  "vector_words": [
+    536871936,
+    15585
+  ],
+  "compatibility_record_address": 15352,
+  "compatibility_words": [
+    67391680,
+    872415233,
+    131076
+  ],
+  "unoccupied_flash_bytes_within_binary": 2356,
+  "loader_growth_before_0x6000_bytes": 1160,
+  "qmk_capacity_at_0x6000_bytes": 105984,
+  "qmk_capacity_at_0x8000_bytes": 97792,
+  "ram_static_and_stacks_bytes": 5032,
+  "ram_heap_bytes": 11320,
+  "top_sram_reserved_bytes": 32,
+  "validation": {
+    "word_aligned": true,
+    "fits_before_0x6000": true,
+    "factory_compatibility_words_match": true,
+    "hardware_tested": false,
+    "safe_to_flash": false,
+    "clean_recipe_reproduction_binary_matches": true
+  }
+}

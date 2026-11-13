@@ -51,6 +51,7 @@ revisions or IAP contents.
 - [Current QMK implementation and upstream prerequisites](docs/qmk-upstream-readiness.md)
 - [Final key, DIP, split-recovery and USB suspend checks](docs/mistel-md770-final-hardware-tests.json)
 - [Normal USB installation procedure](docs/usb-flashing.md)
+- [Secondary DFU build-only investigation](tests/secondary_dfu_size_probe/README.md) — not installable firmware
 - [First right-half QMK hardware result](docs/mistel-md770-right-qmk-first-test.json)
 - [First left-half QMK hardware result](docs/mistel-md770-left-qmk-first-test.json)
 - [Split bring-up and current firmware checkpoint](docs/mistel-md770-qmk-split-test.json)

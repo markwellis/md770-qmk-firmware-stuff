@@ -1,0 +1,343 @@
+--- a/Makefile
++++ b/Makefile
+@@ -86,7 +86,7 @@
+ PROJECT = usbdfu
+ 
+ # Target settings.
+-MCU  = cortex-m3
++MCU  = cortex-m0plus
+ 
+ # Imported source files and paths.
+ CHIBIOS = ./ChibiOS
+@@ -94,20 +94,20 @@
+ CONFDIR  := ./cfg
+ BUILDDIR := ./build
+ DEPDIR   := ./.dep
+-BOARDDIR := ./board
++BOARDDIR := $(CHIBIOS_CONTRIB)/os/hal/boards/HT_HT32F52342_52
+ 
+ # Licensing files.
+ include $(CHIBIOS)/os/license/license.mk
+ # Startup files.
+-include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_ht32f165x.mk
++include $(CHIBIOS_CONTRIB)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_ht32f523xx.mk
+ # HAL-OSAL files (optional).
+ include $(CHIBIOS)/os/hal/hal.mk
+-include $(CHIBIOS_CONTRIB)/os/hal/ports/HT32/HT32F165x/platform.mk
++include $(CHIBIOS_CONTRIB)/os/hal/ports/HT32/HT32F523xx/platform.mk
+ include $(BOARDDIR)/board.mk
+ include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
+ # RTOS files (optional).
+ include $(CHIBIOS)/os/rt/rt.mk
+-include $(CHIBIOS)/os/common/ports/ARMv7-M/compilers/GCC/mk/port.mk
++include $(CHIBIOS)/os/common/ports/ARMv6-M/compilers/GCC/mk/port.mk
+ # Auto-build files in ./source recursively.
+ include $(CHIBIOS)/tools/mk/autobuild.mk
+ # Other files (optional).
+@@ -117,7 +117,7 @@
+ 
+ # Define linker script file here
+ # We used the 1653 config, because this is the smaller device of the two
+-LDSCRIPT= $(STARTUPLD_CONTRIB)/HT32F1653.ld
++LDSCRIPT= ./secondary.ld
+ 
+ # C sources that can be compiled in ARM or THUMB mode depending on the global
+ # setting.
+@@ -153,10 +153,10 @@
+ #
+ 
+ # List all user C define here, like -D_DEBUG=1
+-UDEFS = -DPORT_IGNORE_GCC_VERSION_CHECK
++UDEFS = -DPORT_IGNORE_GCC_VERSION_CHECK=1 -DCRT0_VTOR_INIT=1 -DCRT0_AREAS_NUMBER=1
+ 
+ # Define ASM defines here
+-UADEFS = -DPORT_IGNORE_GCC_VERSION_CHECK
++UADEFS = -DPORT_IGNORE_GCC_VERSION_CHECK=1 -DCRT0_VTOR_INIT=1
+ 
+ # List all user directories here
+ UINCDIR =
+--- a/source/usbdfu.h
++++ b/source/usbdfu.h
+@@ -6,11 +6,11 @@
+ extern const USBConfig usbcfg;
+ 
+ 
+-#define MAX_FLASH_ADDR 0x10000
++#define MAX_FLASH_ADDR 0x1fe00
+ #define FLASH_BASE 0x0
+-#define BL_SIZE 0x2000
++#define BL_SIZE 0x6000
+ #define APP_BASE (FLASH_BASE + BL_SIZE)
+-#define FLASH_PAGE_SIZE 4096
++#define FLASH_PAGE_SIZE 512
+ 
+ #define FW_BUFFER_SIZE 256
+ 
+--- a/source/dfu_target.h
++++ b/source/dfu_target.h
+@@ -4,10 +4,6 @@
+ #include <stddef.h>
+ #include <stdbool.h>
+ 
+-#define FLASH_PAGE_SIZE 1024
+-#define MAX_FLASH_ADDR (0x10000 - FLASH_PAGE_SIZE) // 63 kiB
+-#define BL_SIZE 0x2000
+-#define APP_BASE 0x3400
+ 
+ size_t target_get_max_fw_size(void);
+ uint16_t target_get_timeout(void);
+--- a/cfg/mcuconf.h
++++ b/cfg/mcuconf.h
+@@ -1,7 +1,7 @@
+ // Copyright 2026 Mark Ellis (@markwellis)
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ #pragma once
+-#include "nvic.h"
++
+ 
+ #define HT32F52352_MCUCONF
+ #define HT32_CKCU_SW CKCU_GCCR_SW_PLL
+@@ -17,17 +17,17 @@
+ 
+ #define HT32_USB_USE_USB0 TRUE
+ #define HT32_USB_USB0_IRQ_PRIORITY MD770_IRQ_PRIORITY(0)
+-#define HT32_SERIAL_USE_USART0 TRUE
++#define HT32_SERIAL_USE_USART0 FALSE
+ #define HT32_USART0_IRQ_PRIORITY MD770_IRQ_PRIORITY(1)
+-#define HT32_SPI_USE_SPI1 TRUE
++#define HT32_SPI_USE_SPI1 FALSE
+ #define HT32_SPI1_IRQ_PRIORITY MD770_IRQ_PRIORITY(3)
+-#define HT32_GPT_USE_BFTM0 TRUE
+-#define HT32_GPT_USE_BFTM1 TRUE
++#define HT32_GPT_USE_BFTM0 FALSE
++#define HT32_GPT_USE_BFTM1 FALSE
+ 
+ #define HT32_GPT_BFTM0_IRQ_PRIORITY MD770_IRQ_PRIORITY(2)
+ #define HT32_GPT_BFTM1_IRQ_PRIORITY MD770_IRQ_PRIORITY(2)
+ 
+ #ifndef MD770_LEFT
+-#    define HT32_PWM_USE_GPTM0 TRUE
+-#    define HT32_PWM_USE_MCTM0 TRUE
++#    define HT32_PWM_USE_GPTM0 FALSE
++#    define HT32_PWM_USE_MCTM0 FALSE
+ #endif
+--- a/cfg/chconf.h
++++ b/cfg/chconf.h
+@@ -72,7 +72,7 @@
+  *          setting also defines the system tick time unit.
+  */
+ #if !defined(CH_CFG_ST_FREQUENCY)
+-#define CH_CFG_ST_FREQUENCY                 10000
++#define CH_CFG_ST_FREQUENCY                 1000
+ #endif
+ 
+ /**
+@@ -100,7 +100,7 @@
+  *          this value.
+  */
+ #if !defined(CH_CFG_ST_TIMEDELTA)
+-#define CH_CFG_ST_TIMEDELTA                 2
++#define CH_CFG_ST_TIMEDELTA                 0
+ #endif
+ 
+ /** @} */
+@@ -177,7 +177,7 @@
+  * @note    The default is @p TRUE.
+  */
+ #if !defined(CH_CFG_USE_TM)
+-#define CH_CFG_USE_TM                       TRUE
++#define CH_CFG_USE_TM                       FALSE
+ #endif
+ 
+ /**
+--- a/cfg/halconf.h
++++ b/cfg/halconf.h
+@@ -51,140 +51,140 @@
+  * @brief   Enables the ADC subsystem.
+  */
+ #if !defined(HAL_USE_ADC) || defined(__DOXYGEN__)
+-#define HAL_USE_ADC                         TRUE
++#define HAL_USE_ADC                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the CAN subsystem.
+  */
+ #if !defined(HAL_USE_CAN) || defined(__DOXYGEN__)
+-#define HAL_USE_CAN                         TRUE
++#define HAL_USE_CAN                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the cryptographic subsystem.
+  */
+ #if !defined(HAL_USE_CRY) || defined(__DOXYGEN__)
+-#define HAL_USE_CRY                         TRUE
++#define HAL_USE_CRY                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the DAC subsystem.
+  */
+ #if !defined(HAL_USE_DAC) || defined(__DOXYGEN__)
+-#define HAL_USE_DAC                         TRUE
++#define HAL_USE_DAC                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the EFlash subsystem.
+  */
+ #if !defined(HAL_USE_EFL) || defined(__DOXYGEN__)
+-#define HAL_USE_EFL                         TRUE
++#define HAL_USE_EFL                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the GPT subsystem.
+  */
+ #if !defined(HAL_USE_GPT) || defined(__DOXYGEN__)
+-#define HAL_USE_GPT                         TRUE
++#define HAL_USE_GPT                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the I2C subsystem.
+  */
+ #if !defined(HAL_USE_I2C) || defined(__DOXYGEN__)
+-#define HAL_USE_I2C                         TRUE
++#define HAL_USE_I2C                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the I2S subsystem.
+  */
+ #if !defined(HAL_USE_I2S) || defined(__DOXYGEN__)
+-#define HAL_USE_I2S                         TRUE
++#define HAL_USE_I2S                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the ICU subsystem.
+  */
+ #if !defined(HAL_USE_ICU) || defined(__DOXYGEN__)
+-#define HAL_USE_ICU                         TRUE
++#define HAL_USE_ICU                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the MAC subsystem.
+  */
+ #if !defined(HAL_USE_MAC) || defined(__DOXYGEN__)
+-#define HAL_USE_MAC                         TRUE
++#define HAL_USE_MAC                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the MMC_SPI subsystem.
+  */
+ #if !defined(HAL_USE_MMC_SPI) || defined(__DOXYGEN__)
+-#define HAL_USE_MMC_SPI                     TRUE
++#define HAL_USE_MMC_SPI                     FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the PWM subsystem.
+  */
+ #if !defined(HAL_USE_PWM) || defined(__DOXYGEN__)
+-#define HAL_USE_PWM                         TRUE
++#define HAL_USE_PWM                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the RTC subsystem.
+  */
+ #if !defined(HAL_USE_RTC) || defined(__DOXYGEN__)
+-#define HAL_USE_RTC                         TRUE
++#define HAL_USE_RTC                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the SDC subsystem.
+  */
+ #if !defined(HAL_USE_SDC) || defined(__DOXYGEN__)
+-#define HAL_USE_SDC                         TRUE
++#define HAL_USE_SDC                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the SERIAL subsystem.
+  */
+ #if !defined(HAL_USE_SERIAL) || defined(__DOXYGEN__)
+-#define HAL_USE_SERIAL                      TRUE
++#define HAL_USE_SERIAL                      FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the SERIAL over USB subsystem.
+  */
+ #if !defined(HAL_USE_SERIAL_USB) || defined(__DOXYGEN__)
+-#define HAL_USE_SERIAL_USB                  TRUE
++#define HAL_USE_SERIAL_USB                  FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the SIO subsystem.
+  */
+ #if !defined(HAL_USE_SIO) || defined(__DOXYGEN__)
+-#define HAL_USE_SIO                         TRUE
++#define HAL_USE_SIO                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the SPI subsystem.
+  */
+ #if !defined(HAL_USE_SPI) || defined(__DOXYGEN__)
+-#define HAL_USE_SPI                         TRUE
++#define HAL_USE_SPI                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the TRNG subsystem.
+  */
+ #if !defined(HAL_USE_TRNG) || defined(__DOXYGEN__)
+-#define HAL_USE_TRNG                        TRUE
++#define HAL_USE_TRNG                        FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the UART subsystem.
+  */
+ #if !defined(HAL_USE_UART) || defined(__DOXYGEN__)
+-#define HAL_USE_UART                        TRUE
++#define HAL_USE_UART                        FALSE
+ #endif
+ 
+ /**
+@@ -198,14 +198,14 @@
+  * @brief   Enables the WDG subsystem.
+  */
+ #if !defined(HAL_USE_WDG) || defined(__DOXYGEN__)
+-#define HAL_USE_WDG                         TRUE
++#define HAL_USE_WDG                         FALSE
+ #endif
+ 
+ /**
+  * @brief   Enables the WSPI subsystem.
+  */
+ #if !defined(HAL_USE_WSPI) || defined(__DOXYGEN__)
+-#define HAL_USE_WSPI                        TRUE
++#define HAL_USE_WSPI                        FALSE
+ #endif
+ 
+ /*===========================================================================*/
+--- a/secondary.ld
++++ b/secondary.ld
+@@ -26,7 +26,7 @@
+ MEMORY {
+     flash0 : org = 0x00003200, len = 0x3bf8 - 0x3200
+     flash1 : org = 0x00003bf8, len = 12
+-    flash2 : org = 0x00003c04, len = 0x1fe00 - 0x3c04
++    flash2 : org = 0x00003c04, len = 0x6000 - 0x3c04
+     flash3 : org = 0, len = 0
+     flash4 : org = 0, len = 0
+     flash5 : org = 0, len = 0
