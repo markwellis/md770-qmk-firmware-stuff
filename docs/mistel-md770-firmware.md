@@ -585,6 +585,11 @@ of the actual unit:
 
 ### First port preparation and review
 
+This section records the initial 2026-11-12 implementation and binaries.
+The subsequent [upstream refinement](qmk-upstream-readiness.md) supersedes
+its keymap and notification details: DIP/Fn/Pn compatibility is now
+implemented, and the custom notification protocol has been removed.
+
 The separate `qmk_firmware` checkout contains the development port on
 branch `mistel-md770-bt`. Its `keyboards/mistel/md770rgb_bt/readme.md`
 records build commands, the notification protocol and current limitations.

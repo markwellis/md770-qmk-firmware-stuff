@@ -474,6 +474,18 @@ depends on the separately read anchor and CRC replies. Full main-image
 restoration is now verified; undocumented option metadata is not preserved
 bit for bit.
 
+## Left-half photographs
+
+The left half was opened on 2026-11-13. The JPEG copies have source
+metadata stripped. These photographs do not establish recovery-pad wiring
+or a tested recovery procedure for the left half.
+
+| Evidence | Original photo |
+| --- | --- |
+| [Whole PCB](mistel-md770-photos/left-pcb.jpg) | `IMG20261113092302.heic` |
+| [Controller](mistel-md770-photos/left-controller.jpg) | `IMG20261113092235.heic` |
+| [LED driver](mistel-md770-photos/left-led-driver.jpg) | `IMG20261113092246.heic` |
+
 ## Removed Bluetooth carrier
 
 The owner supplied further photographs for completeness. Astra independently

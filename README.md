@@ -27,6 +27,8 @@ revisions or IAP contents.
 
 ## Documentation
 
+- [Mistel MD770 user manual](docs/mistel-md770-user-manual.pdf)
+- [Current QMK implementation and upstream prerequisites](docs/qmk-upstream-readiness.md)
 - [Recovery and bootloader investigation](docs/mistel-md770-recovery.md)
 - [Firmware reconstruction, wiring and protocols](docs/mistel-md770-firmware.md)
 - [Initial QMK feasibility assessment](docs/mistel-md770-qmk-feasibility.md)
