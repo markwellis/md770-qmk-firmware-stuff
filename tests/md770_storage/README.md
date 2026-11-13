@@ -2,10 +2,10 @@
 
 This compiles QMK's actual wear-levelling core and SPI backing-store backend
 with the keyboard's configuration. The flash model enforces NOR programming
-and permits erasure only within the allocated `0x0000`–`0x1fff` range.
-It starts with dirty contents and checks both sector erases, cold reload,
-journal consolidation and preservation of bytes outside that allocation.
-This validates storage logic; it does not test physical SPI communication.
+and permits erasure only in the reserved 64 KiB block at `0x0000`–`0xffff`.
+The logical EEPROM remains 4 KiB with an 8 KiB backing store. It checks a
+native block erase, cold reload, journal consolidation and preservation
+outside the reserved block. It does not test physical SPI communication.
 
 Run from this repository with the QMK checkout beside it:
 
@@ -14,6 +14,4 @@ nix-shell -p gcc --run 'gcc -std=gnu11 -Wall -Wextra -Werror -Wno-old-style-decl
 ```
 
 The command uses the backing and logical sizes from the right keyboard's
-JSON. The old configuration's default one-block erase fails the first
-assertion: the checksum and write journal in the second sector remain dirty.
-The warning exception covers an existing QMK timer-header declaration.
+JSON. The warning exception covers an existing QMK timer-header declaration.
