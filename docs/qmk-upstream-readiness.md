@@ -25,14 +25,44 @@ cross-half Shift work, including after a cold USB reconnect. No PCB bridge
 was needed. The owner also confirmed Fn calculator, screenshot and volume
 up/down shortcuts. Caps Lock changes letter case after the host's disable
 option is temporarily removed, but the keyboard shows no Caps Lock indicator.
-The port has no lock-indicator GPIO configuration or LED update hook yet;
-this is a separate implementation gap, not a verified RGB-disable limitation.
-Diagnostic code is absent from the QMK tree.
+The installed baseline lacks indicator support. The implementation below
+adds it to the next build. Diagnostic code is absent from the QMK tree.
 
-Next, implement and validate the Caps Lock indicator, then verify complete
-key and Fn/Pn coverage, the remaining DIP functions, settings persistence
-and held-key split-cable-loss recovery. RGB validation
-needs a separate update; the installed images keep RGB animations disabled.
+## Complete wired feature build
+
+The reviewed implementation is QMK commit `c80470f32e`. See the
+[build and verification record](mistel-md770-qmk-complete-build.json).
+
+The next build adds dedicated Caps Lock and profile indicators using the
+stock timer routing, polarity, frequency and duty. These work independently
+of RGB Matrix. It also adds the three native QMK profile overlays, persistent
+layout/profile selection, profile reset after key release, the physical
+both-Alt factory-reset chord and a real MCU reboot implementation.
+
+Pn+F9/F10 now edit, save and display per-key colours. The RGB Matrix effects
+include a WASD/arrow-key mode. USB suspend clears the RGB payload sent left;
+a stale-frame timeout also clears retained left-side lighting. Momentary
+Fn/Pn releases remain active while colour editing suppresses ordinary typing.
+The source uses native QMK dynamic-keymap APIs; it has no VIA-specific
+handlers or enabled-by-default host configuration protocol.
+
+The right EEPROM allocation is now 4,096 logical bytes with 8,192 backing
+bytes, covering external flash `0x0000`–`0x1fff`. This replaces stock global
+settings and the first stock profile sector. Clear QMK settings when moving
+from the previous seven-layer/4 KiB allocation to this ten-layer layout.
+The owner uses stock defaults. Standalone left-half settings remain transient;
+paired settings belong to the right master.
+
+The optional [VIA definition and instructions](../via/README.md) remain in
+this repository. They are separate from the upstream QMK submission. Vial
+uses a separate firmware fork and remains a downstream integration choice.
+Native QMK/VIA remapping and macros replace the vendor's programming editor;
+the stock macro bytecode engine and Bluetooth remain outside the wired port.
+
+Next, flash the reviewed feature build through normal USB and validate the
+new controls on hardware. The currently installed images keep RGB disabled.
+Full key coverage, remaining DIP combinations, settings persistence, USB
+suspend/wake and held-key split-cable-loss recovery still need bench checks.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
 strict lint and formatting checks. Eighteen host tests pass, covering UART

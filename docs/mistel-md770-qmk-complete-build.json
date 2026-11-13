@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-13",
+  "qmk_source_commit": "c80470f32ea92871d22f4891beacc5f9c2e6178a",
+  "scope": "Wired US 85-key MD770 RGB BT; native QMK default keymap",
+  "hardware_flash_attempted": false,
+  "implementation_review_complete": true,
+  "qmk_strict_lint_both_halves_passed": true,
+  "qmk_unit_tests_passed": 21,
+  "python_host_tests_passed": 17,
+  "native_keymap_and_indicator_harnesses_passed": true,
+  "native_harness_limits": "Mocked host/PWM services; physical wiring, light output and timing require hardware validation",
+  "settings_reset_required": true,
+  "settings_allocation": {
+    "logical_bytes": 4096,
+    "backing_bytes": 8192,
+    "external_start": "0x0000",
+    "external_end_inclusive": "0x1fff"
+  },
+  "implemented_features": [
+    "Independent Caps Lock indicator",
+    "Profile indicator and three QMK profile overlays",
+    "Independent persistent base layout and profile selection",
+    "Profile reset after all keys are released",
+    "Both physical Alt keys held for one second resets settings and reboots",
+    "Real MCU reset and retained updater entry",
+    "Saved per-key colours and native RGB Matrix effects",
+    "WASD and arrow-key lighting",
+    "USB lighting sleep",
+    "Left stale-RGB timeout"
+  ],
+  "images": {
+    "right": {
+      "half": "right",
+      "application_bytes": 34580,
+      "application_sha256": "a886d874000119e8f3186eed03264b31a991d1a83ff28641efff4feab96b6604",
+      "package": "qmk-right-complete-wired-20261113",
+      "rgb_matrix_enabled": true,
+      "console_enabled": false,
+      "raw_hid_enabled": false,
+      "qmk_source_commit": "c80470f32ea92871d22f4891beacc5f9c2e6178a",
+      "hardware_flash_attempted": false,
+      "dependency_patch_sha256": "fbea4b0c989061980bd9600b66db7bfbc545bf8c0a93f857da750ae4615d3794",
+      "settings_reset_required": true
+    },
+    "left": {
+      "half": "left",
+      "application_bytes": 30700,
+      "application_sha256": "e6fdc298714385b473f506f4eafdd2464c96e947d7775d7549d40a6722a5f93d",
+      "package": "qmk-left-complete-wired-20261113",
+      "rgb_matrix_enabled": true,
+      "console_enabled": false,
+      "raw_hid_enabled": false,
+      "qmk_source_commit": "c80470f32ea92871d22f4891beacc5f9c2e6178a",
+      "hardware_flash_attempted": false,
+      "dependency_patch_sha256": "fbea4b0c989061980bd9600b66db7bfbc545bf8c0a93f857da750ae4615d3794",
+      "settings_reset_required": true
+    }
+  },
+  "new_feature_hardware_validation": "Pending; the installed baseline remains the working no-RGB images",
+  "optional_via_build": {
+    "application_bytes": 38140,
+    "application_sha256": "6d3fdd26b169f9d3a3bffa9be0fe55c07fef256ae2ab83b5a99f6ece85692f67",
+    "hardware_flash_attempted": false,
+    "definition": "via/md770rgb_bt.json",
+    "included_in_upstream_default": false
+  }
+}

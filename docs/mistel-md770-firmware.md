@@ -480,6 +480,42 @@ at offsets 0–4, component 1 at 5–9, and component 2 at 10–14. Other
 channel positions remain zero after buffer initialisation. This completes
 the path from a physical matrix position to its serial LED data.
 
+## Dedicated status indicators
+
+The right half has separate Caps Lock and RGB profile indicators. They do
+not use the multiplexed key backlight. The manual identifies LED2 as Caps
+Lock and LED1 as the selected programmable profile.
+
+| Indicator component | Pin | Alternate function | Timer channel |
+| --- | --- | --- | --- |
+| Caps Lock | PC8 | AF4 | GPTM0 CH2 |
+| Profile red | PC4 | AF4 | GPTM0 CH0 |
+| Profile green | PC5 | AF4 | GPTM0 CH1 |
+| Profile blue | PA14 | AF4 | MCTM0 CH0 |
+
+Right routine `0x6630` selects timer compare registers for indicator
+indices 0–4. Caps state handling at `0x6d04` supplies index 0. Profile
+handling at `0xdc88` supplies indices 2, 3 and 4 for profiles 1, 2 and 3.
+The GPIO records at `0xe631`, `0xe637`, `0xe63d` and `0xe649` select the
+corresponding AF4 outputs. The additional MCTM0 CH3 output is not needed
+for the wired profile/Caps indicators.
+
+Timer descriptors at `0xdf30` and `0xdf3a` contain reload `0xffff` and
+prescaler `1`. Routine `0xcbec` writes those fields directly. Indicator-on
+writes compare `6000`; off writes zero. With a 48 MHz timer source this
+is approximately 366.21 Hz and 9.155% active-low duty. ChibiOS PWM mode 1
+with inverted polarity reproduces the stock PWM mode 2 waveform. A 24 MHz
+HAL timer frequency produces the same prescaler. Do not substitute a
+continuous GPIO drive for that waveform without establishing the circuit's
+current-limiting arrangement.
+
+The [Holtek datasheet, Table 3](https://www.holtek.com/webapi/116711/HT32F52342_52_Datasheetv160.pdf)
+confirms the pin-to-timer alternate functions. Holtek
+[AN0708EN](https://www.holtek.com/webapi/116745/an0708en.pdf), pages 4 and 11,
+confirms the timer prescaler and PWM equations. These are firmware and
+manufacturer-document findings; physical indicator behaviour still needs
+validation with the new QMK image.
+
 ## Persistent settings in external SPI flash
 
 Further inspection of the right US 7.02 application identifies an external
