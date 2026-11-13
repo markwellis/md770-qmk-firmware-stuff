@@ -1,5 +1,12 @@
 # MD770 QMK development
 
+This is the historical bring-up record. The current
+[combined QMK candidate](https://github.com/markwellis/qmk_firmware/tree/mistel-md770-support)
+uses the chip's measured 512 KiB geometry and native 64 KiB allocation;
+no shared SPI or wear-levelling patch is required. The older sector-erase
+workarounds below are superseded. See the
+[native storage hardware result](mistel-md770-native-storage-test.json).
+
 The port lives in the separate `qmk_firmware` repository on branch
 `mistel-md770-bt`. Both halves passed USB installation, basic typing, cold
 reconnect and software updater entry/return with RGB animations disabled.

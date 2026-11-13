@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-13",
+  "hardware": "MD770 RGB BT, US right half",
+  "jedec_id": "C84013",
+  "sfdp_capacity_bytes": 524288,
+  "sfdp_erase_types": [
+    {
+      "bytes": 4096,
+      "opcode": "20"
+    },
+    {
+      "bytes": 32768,
+      "opcode": "52"
+    },
+    {
+      "bytes": 65536,
+      "opcode": "d8"
+    }
+  ],
+  "logical_eeprom_bytes": 4096,
+  "backing_bytes": 8192,
+  "reserved_erase_block_bytes": 65536,
+  "before_backup_matching_reads": 2,
+  "native_initial_readback_matches_backup": true,
+  "physical_factory_reset": "both Alt keys",
+  "after_reset_matching_reads": 2,
+  "previously_programmed_tail_bytes_erased": 9498,
+  "guard_offset": 65536,
+  "guard_bytes": 64,
+  "guard_unchanged": true,
+  "owner_confirmed_paired_typing": true,
+  "shared_spi_driver_modified": false,
+  "shared_wear_leveling_backend_modified": false,
+  "board_spi_timeout_ms": 5000,
+  "board_wake_delay_us": 20,
+  "native_test_application_sha256": "f04a2efdbba23d374d14e45e0b83a2d844f092485ccb6d1f52a3050ade6e4361",
+  "raw_backups_published": false
+}
