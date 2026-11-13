@@ -131,3 +131,30 @@ persistence still need verification. Pn+Insert entered the retained updater,
 and its software reset returned to QMK. A visible updater-entry indication
 is deferred until baseline testing is complete. The left half remains on
 stock firmware.
+
+## DIP input polarity correction
+
+The first image inverted the right DIP row even though its GPIO scanner
+already supplies active-high contact bits. All four physical switches off
+therefore reported all four switches as on, enabling Mac-mode media keys.
+Removing that complement is a one-line correction in the matrix adapter.
+The rebuilt application changes only four binary bytes. Its SHA-256 is
+`fdbe9864ab58b5c92294c75c9da6290962430fe081fb2a98b05bf1a936811480`.
+The [correction test record](mistel-md770-right-dip-polarity-test.json)
+records programming and physical retest results separately.
+
+The actual adapter passes all 256 raw DIP-byte values, including upper-bit
+masking, unchanged local key rows and unchanged repeated scans. The original
+code fails the all-off case. Seven existing DIP behaviour tests also pass.
+The small native harness is under `tests/md770_matrix/`; it stubs hardware
+services while compiling the real QMK matrix adapter. With the QMK checkout
+beside this repository, run it using:
+
+```fish
+nix-shell -p gcc --run 'gcc -std=c11 -Wall -Wextra -Werror -ffunction-sections -fdata-sections -Itests/md770_matrix ../qmk_firmware/keyboards/mistel/md770rgb_bt/md770rgb_bt.c tests/md770_matrix/test.c -Wl,--gc-sections -o /tmp/md770-matrix-test && /tmp/md770-matrix-test'
+```
+
+The corrected application passed USB programming and QMK enumeration.
+DIP1 OFF → ON → OFF and cold reconnect passed: F12 switches between
+normal F12 and Volume Up as expected, and Fn+F12 remains F12. All switches
+were left off. The other DIP functions still need the complete keyboard.

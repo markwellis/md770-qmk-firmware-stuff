@@ -54,5 +54,6 @@
       "bcdDevice": "0010"
     }
   },
-  "updater_entry_led_indication": "requested; deferred until baseline hardware validation"
+  "updater_entry_led_indication": "requested; deferred until baseline hardware validation",
+  "later_found_issue": "The first image inverted the physical DIP inputs; corrected and retested in mistel-md770-right-dip-polarity-test.json"
 }

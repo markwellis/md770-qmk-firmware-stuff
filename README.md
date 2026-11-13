@@ -22,7 +22,8 @@ and RGB remain untested.
 - Cold boot, right-half typing and the restored stock updater's checksum/return checks passed.
 - Both halves have verified ROM entry, two matching stock-IAP backups and successful stock restoration.
 - Right-half QMK USB installation, basic typing and cold reconnect passed with SEL2 open.
-- Left-half QMK, split operation, complete key coverage, DIP combinations, RGB and settings persistence remain untested.
+- A one-line DIP polarity correction passed DIP1 OFF/ON/OFF and cold reconnect testing.
+- Left-half QMK, split operation, complete key coverage, remaining DIP functions/combinations, RGB and settings persistence remain untested.
 
 The recorded unit has red switches. A second brown-switch keyboard has
 not been checked. Switch colour alone does not establish identical PCB
