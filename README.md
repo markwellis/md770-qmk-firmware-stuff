@@ -6,7 +6,7 @@ the evidence, photographs, reverse-engineering notes and host utilities.
 
 The QMK port remains in the separate
 [qmk_firmware fork](https://github.com/markwellis/qmk_firmware), on the
-branch `mistel-md770-bt`. QMK source and patches are not
+branch `mistel-md770-support`. QMK source and patches are not
 duplicated here. Both halves have booted QMK after USB-only updates and
 passed basic typing, cold reconnect and updater entry/return checks. Split
 typing and cold reconnect now pass with clean firmware on both halves,
@@ -69,6 +69,14 @@ The photographs under `docs/mistel-md770-photos/` are JPEGs with EXIF,
 XMP and IPTC removed. Their compressed image data was preserved.
 
 ## Host tools
+
+Normal QMK flashing now targets the existing
+[pok3rtool MD770 branch](https://github.com/markwellis/pok3rtool/tree/mistel-md770).
+The MD770-specific change is its device table; the branch also declares
+three dependencies already imported by the tool. See [USB installation](docs/usb-flashing.md)
+for the offline validation and pending hardware test. The local saved-metadata
+flasher below remains the tool used during the recorded hardware tests.
+
 
 - `scripts/md770-extract.py` extracts the supplied `maaV105` updater offline.
 - `scripts/md770_updater_check.py` visits the stock IAP, queries checksums and attempts normal return.

@@ -1,0 +1,64 @@
+{
+  "tool_source_sha256": "6d9f219f2533ae05afd14d68a2958c19e6c6c9d98934c33816413667fc742033",
+  "simulation_only": true,
+  "results": [
+    {
+      "half": "right",
+      "image_bytes": 38376,
+      "image_sha256": "0836bdfb8bee21415bf3607b06397f354db6bba718e772374b0e07ae64655cfe",
+      "boot_validation": "passes recovered right/left-IAP marker/non-FF semantics",
+      "application_preserved_after_version_erase": true,
+      "metadata_words": [
+        "0x800004",
+        "0x10000",
+        "0x41",
+        "0xefffffff",
+        "0x1",
+        "0x0",
+        "0x41904d9"
+      ],
+      "erase_ranges": [
+        [
+          0,
+          118272,
+          118272
+        ],
+        [
+          0,
+          180,
+          512
+        ]
+      ],
+      "reboot_requested": false
+    },
+    {
+      "half": "left",
+      "image_bytes": 30936,
+      "image_sha256": "0306ecb4ae9b0b5d519c149ddd10331f083084b6cb4fa0d3380479866497f000",
+      "boot_validation": "passes recovered right/left-IAP marker/non-FF semantics",
+      "application_preserved_after_version_erase": true,
+      "metadata_words": [
+        "0x800004",
+        "0x10000",
+        "0x41",
+        "0xefffffff",
+        "0x1",
+        "0x0",
+        "0x41a04d9"
+      ],
+      "erase_ranges": [
+        [
+          0,
+          118272,
+          118272
+        ],
+        [
+          0,
+          180,
+          512
+        ]
+      ],
+      "reboot_requested": false
+    }
+  ]
+}
