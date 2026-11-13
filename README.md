@@ -9,7 +9,9 @@ The QMK port remains in the separate
 local development branch `mistel-md770-bt`. QMK source and patches are not
 duplicated here. Both halves have booted QMK after USB-only updates and
 passed basic typing, cold reconnect and updater entry/return checks. Split
-typing and cold reconnect now pass. RGB still needs hardware validation.
+typing and cold reconnect now pass with clean firmware on both halves,
+including both space bars and cross-half Shift. The diagnostic console has
+been removed. RGB still needs hardware validation.
 
 ## Current evidence
 

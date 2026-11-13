@@ -101,11 +101,40 @@
   "last_working_uart_sample": "cr=00000130 dl=96 ier=00000001 sifr=00000980 irq=20860000/00000000",
   "idle_matrix_frame_matches_protocol_reference": true,
   "clean_right_application_sha256": "ca6756e58bf8c59cabdd2a18070a8e3cb7e960fa4d63f2a5ea8a414a31395d89",
-  "clean_right_programmed": false,
-  "current_right_firmware": "Temporary console diagnostic; replace with prepared clean image after reassembly",
+  "clean_right_programmed": true,
+  "current_right_firmware": "Clean QMK image with RGB Matrix and console disabled",
   "current_left_application_sha256": "6586bedbe6c3dba8577dc377c7aefe48d4d407990533df49ebee8e5a6473fa9d",
   "console_capture_stopped": true,
   "qmk_source_commit": "ea746927f667e278145c6cabe2742840d17e3252",
   "clean_right_package": "qmk-right-split-fixed-20261113",
-  "physical_connection_routing_measured": false
+  "physical_connection_routing_measured": false,
+  "clean_right_programming_result": {
+    "date": "2026-11-13",
+    "half": "right",
+    "application_bytes": 26856,
+    "application_sha256": "ca6756e58bf8c59cabdd2a18070a8e3cb7e960fa4d63f2a5ea8a414a31395d89",
+    "version_page_sha256": "28ba8c0c556f1700d2980124df75111a7b9d9e4a0d9db64a72739894146baa61",
+    "write_scope": "application and version pages only",
+    "option_page_modified": false,
+    "erase_attempted": true,
+    "success": true,
+    "iap_preflight_passed": true,
+    "erase_verified": true,
+    "application_checksums_verified": true,
+    "version_page_verified": true,
+    "application_boot_requested": true,
+    "normal_usb_identity": {
+      "idVendor": "04d9",
+      "idProduct": "0419",
+      "product": "MD770 RGB BT (wired QMK)",
+      "bcdDevice": "0010"
+    },
+    "normal_usb_return_verified": true
+  },
+  "clean_right_console_interface_absent": true,
+  "clean_paired_retest_passed": true,
+  "clean_owner_confirmed_both_halves_typing": true,
+  "clean_owner_confirmed_both_space_bars": true,
+  "clean_owner_confirmed_cross_half_shift": true,
+  "clean_owner_confirmed_paired_usb_cold_reconnect": true
 }

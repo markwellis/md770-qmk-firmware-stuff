@@ -13,16 +13,20 @@ active state in QMK commit `ea746927f6`. See the [right](mistel-md770-right-qmk-
 coverage, the remaining DIP functions, settings persistence and held-key
 split-cable-loss behaviour remain unverified.
 
-The right unit currently runs the temporary console diagnostic used for
-that test. Its SHA-256 is
-`ea6adb92978068f7a8f89a0438692e5e536a427acabd8ab3f2a696020524b9a5`.
-The left runs the normal no-RGB image
+Both halves now run clean QMK images with RGB Matrix and the console disabled.
+The right image has SHA-256
+`ca6756e58bf8c59cabdd2a18070a8e3cb7e960fa4d63f2a5ea8a414a31395d89`.
+The left image has SHA-256
 `6586bedbe6c3dba8577dc377c7aefe48d4d407990533df49ebee8e5a6473fa9d`.
-The owner is reassembling the keyboard. Next, replace the right diagnostic
-through the stock USB updater with the prepared clean no-RGB image
-`ca6756e58bf8c59cabdd2a18070a8e3cb7e960fa4d63f2a5ea8a414a31395d89`,
-then repeat paired typing and reconnect checks. No PCB bridge is needed.
-Console capture is stopped, and diagnostic code is absent from the QMK tree.
+The right USB update passed application and version-page checks and returned
+to QMK. Its HID descriptors contain no diagnostic console interface.
+After reassembly, the owner confirmed both halves, both space bars and
+cross-half Shift work, including after a cold USB reconnect. No PCB bridge
+was needed. Diagnostic code is absent from the QMK tree.
+
+Next, verify complete key and Fn/Pn coverage, the remaining DIP functions,
+settings persistence and held-key split-cable-loss recovery. RGB validation
+needs a separate update; the installed images keep RGB animations disabled.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
 strict lint and formatting checks. Eighteen host tests pass, covering UART
