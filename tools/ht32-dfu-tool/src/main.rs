@@ -202,7 +202,7 @@ fn main() {
                     device::Error::PageProtected(page_num) => {
                         panic!("Cannot erase or write to protected page: {page_num}");
                     }
-                    _ => panic!("Write failed"),
+                    other => panic!("Write failed: {other:?}"),
                 },
             };
             if write_args.verify || write_args.fs_en.is_some() {

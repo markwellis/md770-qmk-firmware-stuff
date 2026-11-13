@@ -363,7 +363,10 @@ impl HT32ISPDevice {
         let mut response = [0u8; 64];
         match self.get_report(&mut response) {
             Ok((0, 0)) | Err(Error::Usb(rusb::Error::Pipe)) => Ok(()),
-            Ok(_) => Err(Error::InvalidResponse),
+            Ok((passed, failed)) => {
+                eprintln!("Unexpected pending status: passed={passed} failed={failed}");
+                Err(Error::InvalidResponse)
+            }
             Err(error) => Err(error),
         }
     }
@@ -639,7 +642,10 @@ impl HT32ISPDevice {
 
         // clear status
         let mut status = [0u8; 64];
-        self.clear_status()?;
+        self.clear_status().map_err(|error| {
+            eprintln!("Initial transfer status clear failed at {addr:#010x}: {error:?}");
+            error
+        })?;
 
         let pb = ProgressBar::new(contents.len() as u64);
         pb.set_style(ProgressStyle::with_template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})")
@@ -661,12 +667,19 @@ impl HT32ISPDevice {
             } else {
                 HT32ISPCommand::check_flash_cmd(offset as u32, length, data).into()
             };
-            self.send_cmd(&cmd[..])?;
+            self.send_cmd(&cmd[..]).map_err(|error| {
+                eprintln!("Flash transfer failed at {offset:#010x}, write={write}: {error:?}");
+                error
+            })?;
             count += 1;
             // check status every 30 write/verify requests
             if left <= 52 || count >= 30 {
                 wait_for_status(count, Duration::from_secs(10), || {
                     self.get_report(&mut status)
+                })
+                .map_err(|error| {
+                    eprintln!("Flash acknowledgement failed for {count} requests ending at {:#010x}, write={write}: {error:?}", offset as u32 + length - 1);
+                    error
                 })?;
                 count = 0;
             }
