@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-13",
+  "usb_vid": "04d9",
+  "usb_pid": "041a",
+  "usb_product": "MD770BT-S",
+  "usb_bcd_device": "0410",
+  "boot_info_hex": "0400000000000000d9041a1480600404ffffffff01000000ffffffff6c0100000002e70000024b423034314100000000ffffffff",
+  "application_header_word_hex": "04000200",
+  "application_mode": 1,
+  "flash_written_or_erased": false,
+  "reset_command_sent": false,
+  "protection_changed": false
+}

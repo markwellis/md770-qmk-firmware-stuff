@@ -66,7 +66,9 @@ Applying its 52-byte XOR stream to the decoded US images gives:
 
 The right-half values now match the observed stock-IAP replies in the
 [updater check](mistel-md770-updater-check.json). The left-half values
-remain offline expectations; its checksum conventions are unverified.
+now match the [left-half updater check](mistel-md770-left-updater-check.json).
+See the [left recovery investigation](left-recovery-investigation.md) for
+its measured software behaviour and remaining physical recovery checks.
 
 ## Three distinct entry and recovery mechanisms
 

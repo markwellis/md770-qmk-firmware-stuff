@@ -13,6 +13,57 @@ spec.loader.exec_module(updater)
 
 
 class DiagnosticProtocolTest(unittest.TestCase):
+    def test_left_updater_checksums_and_return_use_left_usb_ids(self):
+        image = bytes(36404)
+        info = bytes.fromhex("0400000000000000d9041a1480600404").ljust(52, b"\xff")
+        encoded = bytes(
+            value ^ updater.XOR_KEY[index % 52] for index, value in enumerate(image)
+        )
+        checksum = (
+            sum(word[0] for word in struct.iter_unpack("<I", encoded)) & 0xFFFFFFFF
+        )
+
+        def request(fd, command, subcommand, data=b""):
+            if command == 0x1D:
+                self.assertEqual(data, struct.pack("<II", 0x200, len(image)))
+                return struct.pack("<I", checksum if subcommand == 1 else 0x90309827)
+            if subcommand == 2:
+                return bytes([fd != 2]).ljust(60, b"\0")
+            if subcommand == 1:
+                return bytes.fromhex("04000200").ljust(60, b"\0")
+            return info.ljust(60, b"\0")
+
+        report = {}
+        with (
+            patch.object(
+                updater,
+                "find_device",
+                side_effect=[("app", "port"), FileNotFoundError()],
+            ) as find,
+            patch.object(
+                updater,
+                "wait_device",
+                side_effect=[("iap", "port"), ("iap", "port"), ("app", "port")],
+            ) as wait,
+            patch.object(updater, "open_device", side_effect=[1, 2, 2, 3]),
+            patch.object(updater.os, "close"),
+            patch.object(updater, "request", request),
+            patch.object(updater, "send") as send,
+        ):
+            updater.check(image, info, report, 0x041A, 0x90309827)
+        self.assertEqual(find.call_args_list[0].args, (0x041A,))
+        self.assertEqual(find.call_args_list[1].args, (0x041A, "port"))
+        self.assertEqual(
+            [call.args for call in wait.call_args_list],
+            [(0x141A, "port"), (0x141A, "port"), (0x041A, "port")],
+        )
+        self.assertEqual(
+            [call.args for call in send.call_args_list], [(1, 0x11, 0), (2, 0x11, 1)]
+        )
+        self.assertTrue(report["encoded_sum_matches"])
+        self.assertTrue(report["encoded_crc_matches"])
+        self.assertTrue(report["normal_usb_return_verified"])
+
     def test_flash_modification_commands_are_rejected(self):
         for command, subcommand in [(0x1D, 0), (0x1E, 1), (0x1F, 4), (0xC0, 0xF0)]:
             with self.subTest(command=command, subcommand=subcommand):

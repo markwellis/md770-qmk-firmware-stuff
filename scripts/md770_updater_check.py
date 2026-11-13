@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the right MD770 stock updater and return to the application."""
+"""Check an MD770 stock updater and return to the application."""
 
 import argparse
 from datetime import datetime, timezone
@@ -12,7 +12,20 @@ import struct
 import time
 
 
-APP_SHA256 = "8fafdca096756f23626802d5b586b270b0bd512fe5d1c0327db4eafcd4f689b2"
+APPLICATIONS = {
+    "right": (
+        0x0419,
+        "8fafdca096756f23626802d5b586b270b0bd512fe5d1c0327db4eafcd4f689b2",
+        0x040450C0,
+        0x6785727C,
+    ),
+    "left": (
+        0x041A,
+        "febc84d9dc1fd23152218232839279ecb59f255615a6d6c5b4d951a848c85064",
+        0x04046080,
+        0x90309827,
+    ),
+}
 XOR_KEY = struct.pack(
     "<13I",
     0xE7C29474,
@@ -122,20 +135,23 @@ def request(fd: int, command: int, subcommand: int, data: bytes = b"") -> bytes:
 
 
 def return_application(
-    physical: str, expected_info: bytes, report: dict[str, object]
+    physical: str,
+    expected_info: bytes,
+    report: dict[str, object],
+    app_pid: int = 0x0419,
 ) -> None:
     """Try to leave the IAP and verify the application on the same USB port."""
     try:
-        app_path, _ = find_device(0x0419, physical)
+        app_path, _ = find_device(app_pid, physical)
     except FileNotFoundError:
-        iap_path, _ = wait_device(0x1419, physical)
+        iap_path, _ = wait_device(app_pid | 0x1000, physical)
         fd = open_device(iap_path)
         try:
             send(fd, 0x11, 1)
             report["return_reset_sent"] = True
         finally:
             os.close(fd)
-        app_path, _ = wait_device(0x0419, physical)
+        app_path, _ = wait_device(app_pid, physical)
     app_fd = open_device(app_path)
     try:
         if request(app_fd, 0x12, 2)[0] != 1:
@@ -147,12 +163,17 @@ def return_application(
         os.close(app_fd)
 
 
-def check(image: bytes, expected_info: bytes, report: dict[str, object]) -> None:
+def check(
+    image: bytes,
+    expected_info: bytes,
+    report: dict[str, object],
+    app_pid: int = 0x0419,
+    expected_crc: int = 0x6785727C,
+) -> None:
     """Visit the stock IAP and attempt normal return even if its checks fail."""
-    path, physical = find_device(0x0419)
+    path, physical = find_device(app_pid)
     if not physical:
         raise RuntimeError("Cannot bind the check to a physical USB port")
-    report["physical_usb_path"] = physical
     entry_attempted = False
     try:
         fd = open_device(path)
@@ -168,7 +189,7 @@ def check(image: bytes, expected_info: bytes, report: dict[str, object]) -> None
             report["entry_reset_sent"] = True
         finally:
             os.close(fd)
-        iap_path, _ = wait_device(0x1419, physical)
+        iap_path, _ = wait_device(app_pid | 0x1000, physical)
         report["iap_enumeration_verified"] = True
         fd = open_device(iap_path)
         try:
@@ -193,7 +214,7 @@ def check(image: bytes, expected_info: bytes, report: dict[str, object]) -> None
             report["encoded_sum"] = f"0x{actual_sum:08x}"
             report["encoded_crc32"] = f"0x{actual_crc:08x}"
             report["encoded_sum_matches"] = actual_sum == expected_sum
-            report["encoded_crc_matches"] = actual_crc == 0x6785727C
+            report["encoded_crc_matches"] = actual_crc == expected_crc
             if not report["encoded_sum_matches"] or not report["encoded_crc_matches"]:
                 raise RuntimeError(
                     "Installed application differs from the decoded vendor image"
@@ -206,7 +227,7 @@ def check(image: bytes, expected_info: bytes, report: dict[str, object]) -> None
     finally:
         if entry_attempted:
             try:
-                return_application(physical, expected_info, report)
+                return_application(physical, expected_info, report, app_pid)
             except BaseException as error:
                 report["return_error"] = str(error)
                 raise
@@ -217,22 +238,25 @@ def main() -> None:
     parser.add_argument("image", type=Path)
     parser.add_argument("live_info", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--half", choices=APPLICATIONS, default="right")
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"Refusing to replace {args.output}")
     image = args.image.read_bytes()
-    if hashlib.sha256(image).hexdigest() != APP_SHA256:
-        raise ValueError("Expected decoded right US 7.02 application")
+    app_pid, app_sha256, signature, expected_crc = APPLICATIONS[args.half]
+    if hashlib.sha256(image).hexdigest() != app_sha256:
+        raise ValueError(f"Expected the recorded {args.half} US application")
     expected_info = bytes.fromhex(
         json.loads(args.live_info.read_text())["boot_info_hex"]
     )
-    if len(expected_info) != 52 or expected_info[8:16] != bytes.fromhex(
-        "d9041914c0500404"
+    if len(expected_info) != 52 or expected_info[8:16] != struct.pack(
+        "<HHI", 0x04D9, app_pid | 0x1000, signature
     ):
-        raise ValueError("Expected the saved right-half boot information")
+        raise ValueError(f"Expected the saved {args.half}-half boot information")
     report = {
-        "started_utc": datetime.now(timezone.utc).isoformat(),
-        "application_sha256": APP_SHA256,
+        "date": datetime.now(timezone.utc).date().isoformat(),
+        "half": args.half,
+        "application_sha256": app_sha256,
         "iap_enumeration_verified": False,
         "normal_usb_return_verified": False,
         "flash_written_or_erased": False,
@@ -240,7 +264,7 @@ def main() -> None:
         "success": False,
     }
     try:
-        check(image, expected_info, report)
+        check(image, expected_info, report, app_pid, expected_crc)
         report["success"] = True
     finally:
         with args.output.open("x") as output:
