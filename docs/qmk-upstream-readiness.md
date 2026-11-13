@@ -1,13 +1,28 @@
 # MD770 QMK development
 
 The port lives in the separate `qmk_firmware` repository on branch
-`mistel-md770-bt`. The right half has passed USB-only QMK installation,
-basic typing and cold reconnect. The recorded
-right half has passed [stock recovery](mistel-md770-stock-restore.json).
-Both halves now have verified ROM entry, two matching IAP backups and
-successful stock restoration. Left-half QMK, split operation and RGB remain
-untested. The [first right-half test record](mistel-md770-right-qmk-first-test.json)
-records the exact build and verified behaviour.
+`mistel-md770-bt`. Both halves passed USB installation, basic typing, cold
+reconnect and software updater entry/return with RGB animations disabled.
+Both also have tested stock recovery, independent ROM entry and two matching
+stock-IAP backups.
+
+Split typing and cold reconnect passed after restoring right PB11's stock
+active state in QMK commit `ea746927f6`. See the [right](mistel-md770-right-qmk-first-test.json),
+[left](mistel-md770-left-qmk-first-test.json) and
+[split](mistel-md770-qmk-split-test.json) records. RGB, complete key/modifier
+coverage, the remaining DIP functions, settings persistence and held-key
+split-cable-loss behaviour remain unverified.
+
+The right unit currently runs the temporary console diagnostic used for
+that test. Its SHA-256 is
+`ea6adb92978068f7a8f89a0438692e5e536a427acabd8ab3f2a696020524b9a5`.
+The left runs the normal no-RGB image
+`6586bedbe6c3dba8577dc377c7aefe48d4d407990533df49ebee8e5a6473fa9d`.
+The owner is reassembling the keyboard. Next, replace the right diagnostic
+through the stock USB updater with the prepared clean no-RGB image
+`ca6756e58bf8c59cabdd2a18070a8e3cb7e960fa4d63f2a5ea8a414a31395d89`,
+then repeat paired typing and reconnect checks. No PCB bridge is needed.
+Console capture is stopped, and diagnostic code is absent from the QMK tree.
 
 The refinement is recorded in QMK commit `789e14987a`. Both halves pass
 strict lint and formatting checks. Eighteen host tests pass, covering UART
@@ -129,8 +144,9 @@ USB programming, basic typing, Backspace/Enter/arrows and cold reconnect
 have passed. Every individual key, DIP combination, RGB and settings
 persistence still need verification. Pn+Insert entered the retained updater,
 and its software reset returned to QMK. A visible updater-entry indication
-is deferred until baseline testing is complete. The left half remains on
-stock firmware.
+is deferred until baseline testing is complete. The left half was still on
+stock firmware during this first right-half test; its later QMK results are
+linked above.
 
 ## DIP input polarity correction
 
@@ -158,3 +174,28 @@ The corrected application passed USB programming and QMK enumeration.
 DIP1 OFF → ON → OFF and cold reconnect passed: F12 switches between
 normal F12 and Volume Up as expected, and Fn+F12 remains F12. All switches
 were left off. The other DIP functions still need the complete keyboard.
+
+## Split GPIO correction
+
+The first paired test produced no left-hand keys. Restoring stock PB8 pulls
+alone did not repair it. A temporary standard QMK console build showed the
+right UART transmitting and draining its queue, but only one stray received
+byte and no valid left matrix frames, including during a held left key.
+
+Stock right record `0xe65b` configures PB11 as GPIO AF1, push-pull high, with
+input sensing enabled and no pulls. Its setup preloads high before enabling
+the output. The port had left that pin as an input. Restoring this state
+produced valid matrix packets, paired typing and successful cold reconnect.
+The observed `DIR=6c81`, `INE=0942` and high input bit `0800` match the intended
+configuration. The physical net has not been traced; this does not establish
+that PB11 is a power-enable signal.
+
+The production change only restores left PB8 input pull-down, right PB8 input
+pull-up and the right PB11 state. UART speed, framing and gate polarity are
+unchanged. QMK GPIO helpers cover the ordinary operations; ChibiOS PAL combines
+PB11 output drive with input sensing, which the generic GPIO helper cannot
+express. PB11 is not changed on the left, where it selects a matrix row.
+
+Temporary counters and console output remain outside the upstream source.
+The [diagnostic record](mistel-md770-qmk-split-diagnostics.json) retains the
+small before/after observations without publishing a key-logging transcript.

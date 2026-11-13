@@ -7,9 +7,9 @@ the evidence, photographs, reverse-engineering notes and host utilities.
 The QMK port remains in the separate
 [qmk_firmware fork](https://github.com/markwellis/qmk_firmware), on the
 local development branch `mistel-md770-bt`. QMK source and patches are not
-duplicated here. The right half has booted QMK after a USB-only update and
-passed basic typing and cold reconnect checks. Left-half QMK, the split link
-and RGB remain untested.
+duplicated here. Both halves have booted QMK after USB-only updates and
+passed basic typing, cold reconnect and updater entry/return checks. Split
+typing and cold reconnect now pass. RGB still needs hardware validation.
 
 ## Current evidence
 
@@ -23,7 +23,9 @@ and RGB remain untested.
 - Both halves have verified ROM entry, two matching stock-IAP backups and successful stock restoration.
 - Right-half QMK USB installation, basic typing and cold reconnect passed with SEL2 open.
 - A one-line DIP polarity correction passed DIP1 OFF/ON/OFF and cold reconnect testing.
-- Left-half QMK, split operation, complete key coverage, remaining DIP functions/combinations, RGB and settings persistence remain untested.
+- Left-half USB installation, basic typing, Shift/Caps Lock, cold reconnect and Escape-on-connect updater entry/return passed with SEL4 open.
+- Split typing and cold reconnect passed after restoring the stock right PB11 active state.
+- Complete key coverage, remaining DIP functions/combinations, RGB, settings persistence and held-key cable-loss recovery remain untested.
 
 The recorded unit has red switches. A second brown-switch keyboard has
 not been checked. Switch colour alone does not establish identical PCB
@@ -35,6 +37,9 @@ revisions or IAP contents.
 - [Current QMK implementation and upstream prerequisites](docs/qmk-upstream-readiness.md)
 - [Normal USB installation procedure](docs/usb-flashing.md)
 - [First right-half QMK hardware result](docs/mistel-md770-right-qmk-first-test.json)
+- [First left-half QMK hardware result](docs/mistel-md770-left-qmk-first-test.json)
+- [Split bring-up and current firmware checkpoint](docs/mistel-md770-qmk-split-test.json)
+- [UART diagnostic evidence](docs/mistel-md770-qmk-split-diagnostics.json)
 - [Recovery and bootloader investigation](docs/mistel-md770-recovery.md)
 - [Left-half recovery investigation](docs/left-recovery-investigation.md)
 - [Firmware reconstruction, wiring and protocols](docs/mistel-md770-firmware.md)
@@ -53,7 +58,7 @@ XMP and IPTC removed. Their compressed image data was preserved.
 - `scripts/md770-extract.py` extracts the supplied `maaV105` updater offline.
 - `scripts/md770_updater_check.py` visits the stock IAP, queries checksums and attempts normal return.
 - `scripts/md770_flash.py` installs a compatible application through the retained stock USB updater; offline validation is the default.
-- `scripts/md770_prepare_recovery.py` assembles the known right-half restoration package offline.
+- `scripts/md770_prepare_recovery.py` assembles the recorded stock restoration packages offline.
 - `scripts/md770-backlight.py` contains the stock-lighting experiment.
 - `scripts/md770-ghidra/` reproduces the decompilation setup and exports.
 - `tools/ht32-dfu-tool/` contains the pinned and corrected Holtek host utility.

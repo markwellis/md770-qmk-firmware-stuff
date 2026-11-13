@@ -7,10 +7,12 @@ recovery methods when neither application entry nor the stock updater works.
 The USB flasher is prepared for the recorded US-layout RGB BT firmware.
 Its protocol has been checked against the recovered right bootloader and
 host failure-path tests. The recorded right half passed USB installation,
-QMK enumeration, basic typing and cold reconnect with SEL2 open. See the
-[first hardware test](mistel-md770-right-qmk-first-test.json). Left-half USB
-programming and hardware interruption tests remain untested. Pn+Insert
-entry from running QMK and software return to QMK also passed on the right.
+QMK enumeration, basic typing and cold reconnect with SEL2 open. The left
+half passed the same tests with SEL4 open. Updater entry and return passed
+using Pn+Insert on the right and Escape-on-connect on the left. See the
+[right](mistel-md770-right-qmk-first-test.json) and
+[left](mistel-md770-left-qmk-first-test.json) records. Hardware interruption
+tests remain untested.
 
 ## Right-half first test
 
@@ -41,6 +43,20 @@ It checks the boot information against the supplied record and accepts
 only a matching version page, or erased portions of that same page after
 an interrupted update. Keep a saved boot/version record for the exact half
 being updated. Do not substitute a different model's or layout's metadata.
+
+## Left-half installation
+
+Connect only the left half, with SEL4 open and the inter-half cable and battery
+power disconnected. Use its own application image and saved metadata:
+
+```fish
+sudo -A python3 scripts/md770_flash.py /path/to/left-application.bin docs/mistel-md770-left-live-info.json --half left --flash --output /path/to/new-left-result.json
+```
+
+Stock firmware enters the updater automatically. From an installed QMK left
+half, hold Escape while connecting USB, wait two seconds, then release it.
+This uses Bootmagic and clears QMK settings. The tool then accepts the
+left updater already present as `04d9:141a`.
 
 ## Transaction and bounds
 

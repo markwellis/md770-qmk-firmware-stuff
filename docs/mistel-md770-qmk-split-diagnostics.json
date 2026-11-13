@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-13",
+  "right_application_sha256": "8016336d6f15b22bcc77bb0261cc715f9172313228250bb530c8e2e240d352f3",
+  "configuration": "Both halves joined using original cable; host USB only on right",
+  "last_link_samples": [
+    "t=433000 rx=1 frames=0 txq=13527 iq=0 free=256",
+    "t=434000 rx=1 frames=0 txq=13559 iq=0 free=198",
+    "t=435000 rx=1 frames=0 txq=13590 iq=0 free=256"
+  ],
+  "last_uart_sample": "cr=00000130 dl=96 ier=00000001 sifr=00000980 irq=20860000/00000000",
+  "last_gpio_sample": "din=0142 dir=6481 ine=0142 pu=0100 pd=0000 af=15111166 clk=00004100/00000000/00000000",
+  "owner_held_left_a_for_two_seconds": true,
+  "received_byte_count_remained": 1,
+  "valid_frame_count": 0,
+  "transmit_queue_drained": true,
+  "pb11_direction_and_input_enable_were_clear": true,
+  "conclusion": "No sustained UART traffic arrives from the left; power state and connection detection are not yet distinguished",
+  "pb11_test_application_sha256": "ea6adb92978068f7a8f89a0438692e5e536a427acabd8ab3f2a696020524b9a5",
+  "pb11_test_result": "Valid left matrix frames and paired typing resumed after restoring the verified stock PB11 high output",
+  "pb11_test_link_sample": "t=101000 rx=44114 frames=3151 txq=3155 iq=0 free=256",
+  "pb11_test_gpio_sample": "din=0942 dir=6c81 ine=0942 pu=0100 pd=0000 af=15111166 clk=00004100/00000000/00000000",
+  "pb11_circuit_function": "Unmeasured; do not label it a power enable from these software observations alone"
+}

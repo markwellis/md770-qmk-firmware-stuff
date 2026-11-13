@@ -75,8 +75,8 @@ are at right `0xdfd4` and left `0xab24`; both contain the same settings:
 | Transfer mechanism | Peripheral DMA for transmission and a receive ring buffer |
 
 Pin bytes `0x20` and `0x21` are decoded as port `value >> 5`, pin
-`value & 31`. The descriptor's final byte `0x03` is a GPIO mode setting,
-not the alternate-function number. The GPIO template's `0x30 >> 3`
+`value & 31`. The descriptor's final byte `0x03` supplies pull bits merged into separate
+TX/RX GPIO templates; it is not an alternate-function number. The GPIO template's `0x30 >> 3`
 selects AF6. Right routines `0xa64c`, `0x39b0` and `0x38f0` establish this
 path; the datasheet independently assigns PB0/PB1 to USART0 TX/RX.
 
@@ -159,6 +159,14 @@ interrupt/controller when entering its disabled state. PB8's connection
 to the interconnect or another board signal remains electrically
 unverified; valid RGB packets alone do not replace this mode input.
 
+Stock active GPIO records also matter: right PB8 at `0xe661` uses an input
+pull-up, left PB8 at `0xb10d` uses an input pull-down, and right PB11 at
+`0xe65b` is push-pull high with input sensing enabled. QMK's missing PB11
+state prevented paired key traffic; restoring the verified stock state
+brought up valid left matrix frames and paired typing. The net's electrical
+routing and exact circuit purpose remain unmeasured. See the
+[split test record](mistel-md770-qmk-split-test.json).
+
 The first normal enqueue registers the receive callback and arms the
 transport. No special initial packet is needed after that registration.
 Left callback `0x532c` copies the 126 RGB bytes, enables the LED driver on
@@ -184,7 +192,7 @@ handler `0x6cb0`; both key changes and non-zero RGB reset it. Power routine
 `0x67d4` uses it when USB is absent. Its nominal 300 ms interval is therefore
 a general inactivity/sleep mechanism, not a dedicated packet watchdog or
 a guaranteed link-disconnect timeout. The physical USB-C contact mapping
-and actual unplug/reconnect behaviour remain unverified.
+and live inter-half cable-loss/reconnect behaviour remain unverified.
 
 ## Key matrix and shared pins
 
@@ -577,12 +585,12 @@ of the actual unit:
 
 | Area | What the recovered software establishes | Remaining work |
 | --- | --- | --- |
-| Controller | Photographed HT50F52352 in a 64-lead package; ROM model-slot value `52352` | Validate operation on hardware; the OEM marking is not a literal HT32 part marking |
-| Clock/timer state | Application clock selection, divisors and timer settings; both IAPs available for startup analysis | Validate the prepared QMK clock and scan timing on hardware |
+| Controller | Photographed HT50F52352 in a 64-lead package; ROM model-slot value `52352` | Broader peripheral validation; the OEM marking is not a literal HT32 part marking |
+| Clock/timer state | Application clock selection, divisors and timer settings; both IAPs available for startup analysis | Measure clock/scan waveforms; basic USB and split operation now pass |
 | Key positions | Matrix-to-key tables, Fn/Pn and layout remaps | Match the US key layout and test each key; alternative-layout entries do not prove physical switches exist |
-| Split behaviour | UART pins, framing, checksums, payloads, scheduling and PB8 mode selection | Implement the recovered behaviour and test connection loss/reconnection; physical contact routing and waveforms remain unmeasured |
-| Persistent settings | SPI1 pin/mode assignments, external flash commands, global record and four profile sectors | Validate the prepared QMK backend on hardware after preserving the stock flash; broader stock macro allocation remains to be mapped |
-| Recovery | Right SEL2 and left SEL4 ROM entry; two matching IAP backups per half; both boot policies decoded; stock restoration verified on both halves | Validate the separate QMK application flashing workflow |
+| Split behaviour | UART pins, framing, checksums, payloads, scheduling and PB8 mode selection | Test live cable loss and held-key recovery; paired typing/cold USB reconnect passed, physical routing and waveforms remain unmeasured |
+| Persistent settings | SPI1 pin/mode assignments, external flash commands, global record and four profile sectors | Validate QMK persistence; owner accepted replacing stock global settings without a settings backup; broader macro allocation remains unmapped |
+| Recovery | Right SEL2 and left SEL4 ROM entry; two matching IAP backups per half; both boot policies decoded; stock restoration verified on both halves | Replace the temporary right console image through the verified USB workflow; hardware interruption tests remain pending |
 
 ### First port preparation and review
 
@@ -641,8 +649,9 @@ Thumb reset vectors, vector base and reserved RAM boundary. The QMK
 initial stack pointer is `0x20000400`, using ChibiOS's allocated interrupt
 stack; the stock application's initial pointer is `0x20003fe0`. Bootloader
 acceptance has now been tested for the right-half no-RGB image through the
-stock USB updater. Basic right-half typing and cold reconnect passed; left
-QMK, split operation and RGB remain untested.
+stock USB updater. Both halves later passed USB typing and cold reconnect;
+paired typing and reconnect also passed after the split GPIO correction.
+RGB remains untested.
 
 Follow-up manual review corrected the upper application-flash boundary to
 `0x1fe00`. The final 512-byte main-flash page holds option bytes and is
