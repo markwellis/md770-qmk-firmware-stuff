@@ -1,18 +1,53 @@
-# Mistel MD770 RGB BT research and tools
+# Mistel MD770 QMK
 
 Research for the US-layout Mistel MD770 RGB BT (`MD770BT-M`) and the
 inspected right board `MD770BR-RIGHT V06 1223BJ`. This repository contains
-the evidence, photographs, reverse-engineering notes and host utilities.
+the evidence, photographs, reverse-engineering notes, host utilities and
+personal QMK userspace.
 
 The QMK port remains in the separate
 [qmk_firmware fork](https://github.com/markwellis/qmk_firmware), on the
-branch `mistel-md770-support`. QMK source and patches are not
-duplicated here. Both halves have booted QMK after USB-only updates and
+branch `mistel-md770-support`. Hardware drivers remain in that repository;
+this repository contains the personal `markwellis` keymap. Both halves have booted QMK after USB-only updates and
 passed basic typing, cold reconnect and updater entry/return checks. Split
 typing and cold reconnect now pass with clean firmware on both halves,
 including both space bars and cross-half Shift. The diagnostic console has
 been removed. RGB effects, indicators and settings persistence passed
 hardware validation.
+
+## Personal keymap
+
+This repository is also standard QMK External Userspace. The `markwellis`
+keymap starts from the port's default and enables VIA on the right half for
+USB lighting control. Upstream QMK retains its own `default` keymap.
+
+With a sibling `qmk_firmware` checkout containing the pending changes:
+
+```fish
+nix-shell --run 'qmk userspace-compile -j 4'
+```
+
+See the [personal keymap instructions](keyboards/mistel/md770rgb_bt/keymaps/markwellis/readme.md)
+for setup, custom functions, building, flashing, VIA backups and updates.
+The keymap is GPL-2.0-or-later; see its
+[licence](keyboards/mistel/md770rgb_bt/keymaps/markwellis/LICENSE).
+Other tools retain their own licences and provenance notices.
+
+## Pending upstream changes
+
+Status checked 2026-11-14. The current build setup includes these pending changes:
+
+| Contribution | Status | Purpose |
+| --- | --- | --- |
+| [ChibiOS-Contrib #469](https://github.com/ChibiOS/ChibiOS-Contrib/pull/469) | Open | Correct the HT32 reset-controller address |
+| [pok3rtool #19](https://github.com/pok3r-custom/pok3rtool/pull/19) | Open | Recognise both MD770 halves and declare missing CLI dependencies |
+| [QMK keyboard port](https://github.com/qmk/qmk_firmware/compare/develop...markwellis:qmk_firmware:mistel-md770-support) | Branch prepared; PR not opened | Add the keyboard, default keymap and flashing command |
+| [QMK udev rules](https://github.com/qmk/qmk_udev/compare/main...markwellis:mistel-md770-iap) | Branch prepared; PR not opened | Allow user-level USB access for flashing; not needed for compilation |
+
+The ChibiOS fix must also reach QMK's ChibiOS-Contrib fork and dependency pin.
+`shell.nix` builds pinned upstream `pok3rtool` with the #19 patch. The
+[keymap dependency instructions](keyboards/mistel/md770rgb_bt/keymaps/markwellis/readme.md#pending-upstream-changes)
+cover the current setup and switching to upstream once these changes merge.
 
 ## Selected flashing route
 
@@ -97,7 +132,7 @@ Normal QMK flashing now targets the existing
 The MD770-specific change is its device table; the branch also declares
 three dependencies already imported by the tool. See [USB installation](docs/usb-flashing.md)
 for the hardware results and remaining limits. The local saved-metadata
-flasher below remains the tool used during the recorded hardware tests.
+flasher below was used in earlier hardware tests and remains available for recovery.
 
 
 - `scripts/md770-extract.py` extracts the supplied `maaV105` updater offline.
@@ -159,7 +194,7 @@ The binary and its corresponding source snapshot must match the recorded
 fingerprints. The frozen right-hand writer needs its original `tool-source`
 directory; the maintained source now includes additional diagnostics.
 The corresponding original writer source is available at
-[commit 2fae8dc](https://github.com/markwellis/md770-qmk-firmware-stuff/tree/2fae8dc/tools/ht32-dfu-tool).
+[commit 2fae8dc](https://github.com/markwellis/mistel-md770-qmk/tree/2fae8dc/tools/ht32-dfu-tool).
 
 The utility must match the executable hash in the recorded ROM preflight.
 A different rebuild needs a fresh recorded read-only preflight first.

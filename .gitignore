@@ -9,3 +9,6 @@ __pycache__/
 *.nar.zst
 /recovery/
 /md770-analysis/
+*.hex
+*.uf2
+.build/

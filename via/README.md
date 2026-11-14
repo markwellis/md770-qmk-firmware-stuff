@@ -1,5 +1,9 @@
 # MD770 RGB BT VIA definition
 
+The personal `markwellis` keymap enables VIA on the right half automatically.
+See its [build and flash instructions](../keyboards/mistel/md770rgb_bt/keymaps/markwellis/readme.md).
+The commands below enable VIA when building QMK's `default` keymap directly.
+
 Use this definition with the right-half QMK default keymap built with VIA:
 
 ```fish
@@ -11,8 +15,10 @@ Apply the dependency correction described in
 [the build prerequisites](../docs/qmk-upstream-readiness.md#build-prerequisites)
 first. Flash each half separately using the [USB updater](../docs/usb-flashing.md).
 Clear QMK settings when installing this layer/storage layout for the first time.
-The three programmable profiles increase external-flash use to `0x0000`–`0x1fff`.
-This replaces the stock global-settings sector and its first profile sector.
+QMK reserves the first 64 KiB (`0x0000`–`0xffff`) of the right half's external
+flash, with an 8 KiB backing store and 4 KiB logical EEPROM. Settings resets
+and journal consolidation erase that whole block, including stock settings
+and macros within it.
 
 In [VIA](https://usevia.app/), enable **Show Design tab** in Settings. Open
 Design and load `md770rgb_bt.json` as a V3 definition. Connect the paired
