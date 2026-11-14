@@ -1,0 +1,322 @@
+{
+  "name": "Mistel MD770 RGB BT (wired QMK)",
+  "vendorId": "0x04D9",
+  "productId": "0x0419",
+  "matrix": {
+    "rows": 16,
+    "cols": 8
+  },
+  "keycodes": [
+    "qmk_rgb_matrix_keycodes"
+  ],
+  "customKeycodes": [
+    {
+      "name": "Next layout",
+      "title": "Cycle QWERTY, Colemak and Dvorak",
+      "shortName": "Layout"
+    },
+    {
+      "name": "Palette",
+      "title": "Select the next solid colour",
+      "shortName": "Palette"
+    },
+    {
+      "name": "Red",
+      "title": "Adjust the red channel",
+      "shortName": "Red"
+    },
+    {
+      "name": "Green",
+      "title": "Adjust the green channel",
+      "shortName": "Green"
+    },
+    {
+      "name": "Blue",
+      "title": "Adjust the blue channel",
+      "shortName": "Blue"
+    },
+    {
+      "name": "Next effect",
+      "title": "Select the next RGB Matrix effect",
+      "shortName": "Effect"
+    },
+    {
+      "name": "Default profile",
+      "title": "Select the default profile",
+      "shortName": "Base"
+    },
+    {
+      "name": "Profile 1",
+      "title": "Select programmable profile 1",
+      "shortName": "P1"
+    },
+    {
+      "name": "Profile 2",
+      "title": "Select programmable profile 2",
+      "shortName": "P2"
+    },
+    {
+      "name": "Profile 3",
+      "title": "Select programmable profile 3",
+      "shortName": "P3"
+    },
+    {
+      "name": "Reset profile",
+      "title": "Hold for one second to reset this profile",
+      "shortName": "Reset"
+    },
+    {
+      "name": "Edit colours",
+      "title": "Enter or save per-key colour editing",
+      "shortName": "Edit"
+    },
+    {
+      "name": "Custom colours",
+      "title": "Show the saved per-key colours",
+      "shortName": "Custom"
+    }
+  ],
+  "menus": [
+    {
+      "label": "Lighting",
+      "content": [
+        {
+          "label": "Backlight",
+          "content": [
+            {
+              "label": "Brightness",
+              "type": "range",
+              "options": [
+                0,
+                255
+              ],
+              "content": [
+                "id_qmk_rgb_matrix_brightness",
+                3,
+                1
+              ]
+            },
+            {
+              "label": "Effect",
+              "type": "dropdown",
+              "options": [
+                "Off",
+                "Solid",
+                "Breathing",
+                "Cycle all",
+                "Wave",
+                "Pinwheel",
+                "Spiral",
+                "Raindrops",
+                "Reactive",
+                "Splash",
+                "Riverflow",
+                "Custom colours",
+                "WASD and arrows"
+              ],
+              "content": [
+                "id_qmk_rgb_matrix_effect",
+                3,
+                2
+              ]
+            },
+            {
+              "label": "Effect speed",
+              "type": "range",
+              "options": [
+                0,
+                255
+              ],
+              "content": [
+                "id_qmk_rgb_matrix_effect_speed",
+                3,
+                3
+              ]
+            },
+            {
+              "label": "Colour",
+              "type": "color",
+              "content": [
+                "id_qmk_rgb_matrix_color",
+                3,
+                4
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "layouts": {
+    "keymap": [
+      [
+        {
+          "c": "#aaaaaa",
+          "t": "#000000"
+        },
+        "15,0",
+        {},
+        "14,0",
+        {},
+        "13,0",
+        {},
+        "12,0",
+        {},
+        "11,0",
+        {},
+        "10,0",
+        {},
+        "9,0",
+        {},
+        "5,6",
+        {},
+        "4,6",
+        {},
+        "3,6",
+        {},
+        "2,6",
+        {},
+        "1,6",
+        {},
+        "0,6",
+        {},
+        "6,6",
+        {},
+        "1,5",
+        {},
+        "2,5"
+      ],
+      [
+        "8,0",
+        {
+          "c": "#cccccc"
+        },
+        "15,1",
+        "14,1",
+        "13,1",
+        "12,1",
+        "11,1",
+        "10,1",
+        "1,0",
+        "2,0",
+        "3,0",
+        "4,0",
+        "5,0",
+        "6,0",
+        {
+          "w": 2,
+          "c": "#aaaaaa"
+        },
+        "5,5",
+        "6,4"
+      ],
+      [
+        {
+          "w": 1.5
+        },
+        "9,1",
+        {
+          "c": "#cccccc"
+        },
+        "8,1",
+        "15,2",
+        "15,3",
+        "14,3",
+        "13,2",
+        "0,1",
+        "1,1",
+        "2,1",
+        "3,1",
+        "4,1",
+        "5,1",
+        "6,1",
+        {
+          "w": 1.5,
+          "c": "#aaaaaa"
+        },
+        "4,5",
+        "0,0"
+      ],
+      [
+        {
+          "w": 1.75
+        },
+        "13,3",
+        {
+          "c": "#cccccc"
+        },
+        "12,2",
+        "12,3",
+        "11,2",
+        "11,3",
+        "10,2",
+        "0,2",
+        "1,2",
+        "2,2",
+        "3,2",
+        "4,2",
+        "5,2",
+        {
+          "w": 2.25,
+          "c": "#aaaaaa"
+        },
+        "6,2",
+        "3,5"
+      ],
+      [
+        {
+          "w": 2.25
+        },
+        "14,2",
+        {
+          "c": "#cccccc"
+        },
+        "9,2",
+        "9,3",
+        "8,2",
+        "8,3",
+        "15,4",
+        "0,3",
+        "1,3",
+        "2,3",
+        "3,3",
+        "4,3",
+        {
+          "w": 1.75,
+          "c": "#aaaaaa"
+        },
+        "5,3",
+        "5,4",
+        "6,5"
+      ],
+      [
+        {
+          "w": 1.25
+        },
+        "14,4",
+        {
+          "w": 1.25
+        },
+        "13,4",
+        {
+          "w": 1.25
+        },
+        "12,4",
+        {
+          "w": 3.25
+        },
+        "11,4",
+        {
+          "w": 3
+        },
+        "0,4",
+        "1,4",
+        "2,4",
+        "4,4",
+        "3,4",
+        "0,5",
+        "6,3"
+      ]
+    ]
+  }
+}

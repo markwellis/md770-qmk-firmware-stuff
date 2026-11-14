@@ -1,0 +1,7 @@
+{
+    "userspace_version": "1.1",
+    "build_targets": [
+        ["mistel/md770rgb_bt/right", "markwellis"],
+        ["mistel/md770rgb_bt/left", "markwellis"]
+    ]
+}
