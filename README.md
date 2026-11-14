@@ -31,6 +31,10 @@ as research; do not merge or submit them. The secondary loader adds firmware,
 packaging and recovery maintenance while still needing a CYKB tool for setup.
 The custom saved-metadata flasher remains historical recovery tooling.
 
+[pok3rtool PR #19](https://github.com/pok3r-custom/pok3rtool/pull/19) was
+opened on 2026-11-14 after the both-half hardware tests. The QMK and udev
+PRs remain unopened.
+
 ## Current evidence
 
 - The right controller is marked `HT50F52352`; its ROM reports model value `52352`.
