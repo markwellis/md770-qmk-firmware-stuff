@@ -14,6 +14,19 @@ including both space bars and cross-half Shift. The diagnostic console has
 been removed. RGB effects, indicators and settings persistence passed
 hardware validation.
 
+## Selected flashing route
+
+On 2026-11-14 the owner selected the retained Mistel bootloader with
+`pok3rtool` for both initial installation and subsequent updates. QMK's
+normal flash command invokes that external tool. See [USB installation](docs/usb-flashing.md).
+Hardware validation of this tool on both halves remains pending.
+
+The `md770-secondary-dfu` information branch and
+`mistel-md770-secondary-dfu` QMK branch are withdrawn experiments. Keep them
+as research; do not merge or submit them. The secondary loader adds firmware,
+packaging and recovery maintenance while still needing a CYKB tool for setup.
+The custom saved-metadata flasher remains historical recovery tooling.
+
 ## Current evidence
 
 - The right controller is marked `HT50F52352`; its ROM reports model value `52352`.

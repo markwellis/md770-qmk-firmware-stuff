@@ -4,6 +4,10 @@ Normal installation uses the retained stock USB updater. No PCB bridge is
 required. SEL2 on the right and SEL4 on the left remain emergency ROM
 recovery methods when neither application entry nor the stock updater works.
 
+The owner selected this retained-bootloader route on 2026-11-14 for both
+initial installation and every subsequent update. The secondary DFU
+experiment is withdrawn. No replacement or secondary bootloader is required.
+
 ## Existing-tool integration
 
 The upstream candidate now uses

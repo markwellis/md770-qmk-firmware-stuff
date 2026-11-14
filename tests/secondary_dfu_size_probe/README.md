@@ -1,5 +1,9 @@
 # Secondary DFU offline build proof
 
+Historical experiment: on 2026-11-14 the owner selected the retained Mistel
+bootloader with `pok3rtool`. Secondary DFU is withdrawn from the upstream
+plan. Do not install this probe.
+
 DO NOT FLASH. This prototype always stays in DFU. It has no application
 handoff, independent recovery-key check, watchdog handling, hardened request
 bounds, image validation or verified completion/commit procedure.
