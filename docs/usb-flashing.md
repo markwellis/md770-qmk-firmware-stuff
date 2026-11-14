@@ -28,7 +28,9 @@ pok3rtool flash QMK /path/to/half-application.bin --no-boot
 Connect only the target half. From QMK, enter the updater with Pn+Insert,
 or hold Delete on the right / Escape on the left while connecting USB.
 Stock application firmware permits automatic software entry. After the
-tool succeeds, unplug and reconnect to start QMK. The tool's automatic
+tool succeeds, disconnect host USB at the keyboard for ten seconds, then
+reconnect without holding keys to start QMK. Keep the inter-half cable
+disconnected during this power cycle. The tool's automatic
 return discovery expects a stock vendor interface that QMK does not expose.
 Linux needs USB-device access for libusb; the MD770 `qmk_udev` branch
 provides that access without applying pok3rtool's broad vendor-wide rule.
@@ -40,10 +42,24 @@ the connected half, have a size divisible by four, and fit within the
 `0x1cc00` application limit. The existing tool does not enforce all of
 these MD770-specific checks; use the correct per-half QMK build.
 
-**The pok3rtool route has passed offline simulation with both current
-images. It has not yet been flashed on this keyboard.** The
-[result](mistel-md770-pok3rtool-compatibility.json) records the exact source
-and image hashes. Reproduce it without USB access:
+**Both halves passed hardware QMK-to-QMK updates on 2026-11-14.**
+The unchanged CYKB client flashed the matching images with `--no-boot`.
+Application sum/CRC checks passed again after the metadata write, and the
+metadata readback matched the generated `QMK` version. Both halves returned
+to normal QMK and typed after ten seconds with host USB disconnected at the
+keyboard. The joined keyboard passed typing, both spaces and cross-half Shift.
+See the [right](mistel-md770-pok3rtool-right-hardware-test.json) and
+[left](mistel-md770-pok3rtool-left-hardware-test.json) records.
+
+Two shorter right-half reconnects stayed in the updater; the image and
+metadata still verified. Sending the stock start-application command returned
+QMK. A later ten-second power disconnect directly from updater mode also
+returned QMK. The cause of the shorter-reconnect behaviour was not established.
+
+These tests used `sudo -A`. User-level udev access, automatic entry from
+stock firmware and hardware stock restoration using `pok3rtool` remain
+untested. The [offline result](mistel-md770-pok3rtool-compatibility.json)
+records the earlier simulation. Reproduce that without USB access:
 
 ```fish
 python3 -B tests/pok3rtool_compatibility.py /path/to/pok3rtool /path/to/qmk_firmware

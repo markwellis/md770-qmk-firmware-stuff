@@ -19,7 +19,11 @@ hardware validation.
 On 2026-11-14 the owner selected the retained Mistel bootloader with
 `pok3rtool` for both initial installation and subsequent updates. QMK's
 normal flash command invokes that external tool. See [USB installation](docs/usb-flashing.md).
-Hardware validation of this tool on both halves remains pending.
+Both halves passed hardware flashing, application checksum and metadata
+verification, normal QMK return and typing on 2026-11-14. The rejoined
+keyboard passed both space bars and cross-half Shift. See the
+[right](docs/mistel-md770-pok3rtool-right-hardware-test.json) and
+[left](docs/mistel-md770-pok3rtool-left-hardware-test.json) test records.
 
 The `md770-secondary-dfu` information branch and
 `mistel-md770-secondary-dfu` QMK branch are withdrawn experiments. Keep them
@@ -88,7 +92,7 @@ Normal QMK flashing now targets the existing
 [pok3rtool MD770 branch](https://github.com/markwellis/pok3rtool/tree/mistel-md770).
 The MD770-specific change is its device table; the branch also declares
 three dependencies already imported by the tool. See [USB installation](docs/usb-flashing.md)
-for the offline validation and pending hardware test. The local saved-metadata
+for the hardware results and remaining limits. The local saved-metadata
 flasher below remains the tool used during the recorded hardware tests.
 
 

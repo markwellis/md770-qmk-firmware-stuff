@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-14",
+  "half": "right",
+  "tool_branch": "mistel-md770",
+  "tool_commit": "bafcd1df14f429892d945cef5d0db8a9fa3314ef",
+  "command": "pok3rtool flash QMK mistel_md770rgb_bt_right_default.bin --no-boot",
+  "application_bytes": 38376,
+  "application_sha256": "0836bdfb8bee21415bf3607b06397f354db6bba718e772374b0e07ae64655cfe",
+  "updater_identity": "04d9:1419",
+  "live_boot_info_matches_record": true,
+  "cli_exit_code": 0,
+  "application_sum_and_crc_verified_after_metadata_write": true,
+  "encoded_application_sum": "0xd8c1f815",
+  "encoded_application_crc32": "0xfe2f2bc4",
+  "generated_version": "QMK",
+  "version_words": [
+    "0x00800004",
+    "0x00010000",
+    "0x00000041",
+    "0xefffffff",
+    "0x00000001",
+    "0x00000000",
+    "0x041904d9"
+  ],
+  "version_page_sha256": "470442bf654b0c3f1768d7876052a73300df6348ffba8040fec615ab0b3d7945",
+  "factory_bootloader_and_option_page_outside_erase_range": true,
+  "normal_usb_return_verified": true,
+  "owner_confirmed_typing": true,
+  "owner_confirmed_cold_reconnect_typing": true,
+  "access": "sudo -A; user access denied before test",
+  "secondary_loader_used": false,
+  "qmk_commit": "42e3f8dd2fdd450533316dda28b18d47806609d3",
+  "tool_source_sha256": "6d9f219f2533ae05afd14d68a2958c19e6c6c9d98934c33816413667fc742033",
+  "remained_in_updater_after_flash": true,
+  "scope": "QMK-to-QMK application update; stock-to-QMK automatic entry not tested",
+  "normal_usb_return_method": "Sent retained stock updater command 11 01 through the existing CYKB client",
+  "normal_usb_identity": {
+    "vid": "04d9",
+    "pid": "0419",
+    "product": "MD770 RGB BT (wired QMK)"
+  },
+  "short_reconnects_after_flash": {
+    "count": 2,
+    "result": "Resident updater 04d9:1419 remained; application checksums and metadata still matched",
+    "cause_established": false
+  },
+  "application_checksum_and_crc_verified_after_short_reconnect": true,
+  "cold_reconnect_status": "Passed from updater mode after ten seconds physically disconnected at the keyboard; normal QMK identity and owner typing confirmed",
+  "software_updater_reentry_owner_confirmed": true,
+  "owner_confirmed_final_split_typing": true,
+  "owner_confirmed_both_space_bars": true,
+  "owner_confirmed_cross_half_shift": true
+}
