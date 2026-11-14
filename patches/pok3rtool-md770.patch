@@ -1,0 +1,19 @@
+diff --git a/pok3rtool/cykb.py b/pok3rtool/cykb.py
+index 2d13a57..d661e59 100644
+--- a/pok3rtool/cykb.py
++++ b/pok3rtool/cykb.py
+@@ -26,2 +26,4 @@ known_devices = {
+     (0x04d9, 0x0200): "Mistel Freeboard MD200",  # same as Vortex 22-key Tester
++    (0x04d9, 0x0419): "Mistel MD770 RGB BT right",
++    (0x04d9, 0x041a): "Mistel MD770 RGB BT left",
+ }
+diff --git a/pyproject.toml b/pyproject.toml
+index ec761f4..8861031 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -20,2 +20,5 @@ dependencies = [
+     "tqdm>=4.67.1",
++    "rarfile",
++    "pefile",
++    "dissect.cstruct",
+ ]

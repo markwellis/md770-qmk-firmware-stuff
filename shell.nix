@@ -6,7 +6,13 @@ let
   pok3rtool = python.buildPythonApplication {
     pname = "pok3rtool";
     version = "2.0";
-    src = pkgs.lib.cleanSource ../pok3rtool;
+    src = pkgs.fetchFromGitHub {
+      owner = "pok3r-custom";
+      repo = "pok3rtool";
+      rev = "7da3d5169bd5d7218464d302024e97c0d109999a";
+      hash = "sha256-zkXxwPM29LmhmPn7IfXogT7yeFkA/l/ad8uijBh/LKA=";
+    };
+    patches = [ ./patches/pok3rtool-md770.patch ];
     pyproject = true;
     build-system = [ python.setuptools ];
     dependencies = with python; [

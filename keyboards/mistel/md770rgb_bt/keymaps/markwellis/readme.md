@@ -14,25 +14,54 @@ QMK discovers this repository through its standard
 
 ## Setup on NixOS
 
-Keep these three repositories beside one another:
+Keep these two repositories beside one another:
 
 ```text
 qmk_userspace/
 qmk_firmware/
-pok3rtool/
 ```
 
-`shell.nix` provides QMK, its compiler toolchain and the existing `pok3rtool`
-CLI. It builds that tool from the sibling checkout and uses its declared
-Python dependencies. It sets `QMK_HOME` and `QMK_USERSPACE` inside the shell;
-it does not write a global QMK configuration or install a service.
+`shell.nix` provides QMK, its compiler toolchain and `pok3rtool`. The flasher
+is built from upstream `pok3r-custom/pok3rtool` commit
+`7da3d5169bd5d7218464d302024e97c0d109999a` with the five-line patch from
+[pok3rtool #19](https://github.com/pok3r-custom/pok3rtool/pull/19).
+There is no dependency on a local `pok3rtool` checkout. The source hash is
+fixed, so changes to an upstream branch or PR cannot silently change the tool.
 
-Until the dependencies merge, use QMK branch `mistel-md770-bt-upstream`,
-which includes the provisional HT32 reset fix, and `pok3rtool` branch
-`mistel-md770`. The QMK submission branch omits that provisional dependency
-pin and is waiting for its upstream replacement. See
-[ChibiOS-Contrib #469](https://github.com/ChibiOS/ChibiOS-Contrib/pull/469)
-and [pok3rtool #19](https://github.com/pok3r-custom/pok3rtool/pull/19).
+The shell sets `QMK_HOME` and `QMK_USERSPACE` for the session. It does not
+write global configuration or install a service.
+
+### Pending upstream changes
+
+| Component | Use before merging | Switch after merging |
+| --- | --- | --- |
+| QMK keyboard port | Published `markwellis/qmk_firmware` branch `mistel-md770-support` (`bec2a0bc17`); its PR is not open yet | Upstream QMK containing the MD770 port |
+| HT32 reset address | Fix commit `410d3636` in the QMK-compatible ChibiOS-Contrib branch below; the existing local integration checkout already includes it | QMK must update its ChibiOS-Contrib dependency to include [ChibiOS-Contrib #469](https://github.com/ChibiOS/ChibiOS-Contrib/pull/469) |
+| `pok3rtool` | Pinned upstream source plus `patches/pok3rtool-md770.patch`, applied by `shell.nix` | Update the source pin/hash to a revision containing #19, then remove the patch entry and file |
+| USB permissions | [MD770 qmk_udev branch](https://github.com/qmk/qmk_udev/compare/main...markwellis:mistel-md770-iap), or the sudo flashing command below | Install QMK udev rules containing those device IDs |
+
+The first three supply the firmware source, controller reset fix and flasher.
+The udev rules affect USB access; they are not required to compile firmware.
+Merging #469 into canonical ChibiOS alone is insufficient: the fix must also
+reach QMK's ChibiOS-Contrib fork and QMK's selected dependency revision.
+
+The existing local `mistel-md770-bt-upstream` checkout is ready to build.
+To reproduce the pending configuration with a fresh sibling checkout, run
+these commands from the userspace root. Do not clone over an existing repo:
+
+```fish
+git clone --branch mistel-md770-support https://github.com/markwellis/qmk_firmware.git ../qmk_firmware
+git -C ../qmk_firmware remote add upstream https://github.com/qmk/qmk_firmware.git
+git -C ../qmk_firmware submodule update --init --recursive
+git -C ../qmk_firmware/lib/chibios-contrib fetch https://github.com/markwellis/ChibiOS-Contrib.git qmk-ht32f523x2-reset-register
+git -C ../qmk_firmware/lib/chibios-contrib checkout --detach 410d3636a15485aefc74559a52e38c8a642b8ad9
+```
+
+The final checkout supplies only the reviewed reset-address correction over
+QMK's current dependency. QMK reports that submodule as modified until its
+upstream dependency catches up; keep that local dependency selection out
+of the keyboard submission. Running `git submodule update` on this temporary
+setup restores the older pinned dependency, so reselect the fix afterwards.
 
 Run commands from the root of `qmk_userspace`. For an interactive fish shell:
 
@@ -160,9 +189,9 @@ persistent settings; standalone left-half settings are transient.
 Export any VIA changes before updating. Keep the export with your personal
 source files in Git. Keep this userspace repository separate from the QMK
 hardware source.
-Until the port and dependency fix reach upstream, retain the integration
-branch described above. Once they reach upstream `master`, update from the
-userspace root with:
+Until the port and dependency fix reach upstream, retain the pending setup
+described above. Once both reach upstream `master`, update from the userspace
+root with:
 
 ```fish
 git -C ../qmk_firmware fetch upstream
@@ -171,10 +200,14 @@ git -C ../qmk_firmware merge --ff-only upstream/master
 git -C ../qmk_firmware submodule update --init --recursive
 ```
 
-Update the sibling `pok3rtool` checkout to its upstream version once MD770
-support merges. Rebuild and flash your personal targets with the commands
-above. Keep the last working QMK revision recorded in your own commit notes
-before taking a larger update.
+For the flasher, update `src.rev` and `src.hash` in `shell.nix` to a tested
+upstream commit containing #19, then remove `patches/pok3rtool-md770.patch`
+and its `patches` entry. Until then, the existing pinned source and patch
+continue to work even after the PR merges. Neither source moves automatically.
+
+Re-enter the Nix shell after changing dependencies. Rebuild and flash with
+the same personal commands above. Keep the last working QMK revision
+recorded in your own commit notes before taking a larger update.
 
 Hardware fixes come from QMK. This copied keymap does not automatically
 inherit later edits to QMK's `default` keymap: review changes under
